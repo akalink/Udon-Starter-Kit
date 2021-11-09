@@ -1,5 +1,6 @@
 ﻿
 using System;
+using TMPro;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -14,15 +15,31 @@ namespace StarterKit
 
         public bool synced = false;
 
+        public TextMeshProUGUI logger;
+
         [UdonSynced()] private int clipIndexSync = 0;
         private int clipIndexLocal = 0;
         private AudioSource aSource;
         private float deltaTimeCheck;
+        
+        private void LoggerPrint(string text)
+        {
+            if (logger != null)
+            {
+                logger.text += "-" + this.name + "-" + text + "\n";
+            }
+        }
         void Start()
         {
             aSource = this.GetComponent<AudioSource>();
-            UpdateTrackList();
-
+            if (synced)
+            {
+                UpdateTrackListSync();
+            }
+            else
+            {
+                UpdateTrackListLocal();
+            }
         }
 
         private void Update()
@@ -38,7 +55,7 @@ namespace StarterKit
                         clipIndexSync = 0;
                     }
                     RequestSerialization();
-                    UpdateTrackList();
+                    UpdateTrackListSync();
                 }
                 else
                 {
@@ -46,23 +63,32 @@ namespace StarterKit
                     if (clipIndexLocal >= tracklist.Length)
                     {
                         clipIndexLocal = 0;
-                        UpdateTrackList();
+                        UpdateTrackListLocal();
                     }
                 }
                 
             }
         }
 
-        public void UpdateTrackList()
+        public void UpdateTrackListSync()
         {
+            LoggerPrint("track number is " + clipIndexSync);
             aSource.clip = tracklist[clipIndexSync];
+            deltaTimeCheck = 0;
+            aSource.Play();
+        }
+        
+        public void UpdateTrackListLocal()
+        {
+            LoggerPrint("track number is " + clipIndexLocal);
+            aSource.clip = tracklist[clipIndexLocal];
             deltaTimeCheck = 0;
             aSource.Play();
         }
 
         public override void OnDeserialization()
         {
-            UpdateTrackList();
+            UpdateTrackListSync();
         }
     }
 }

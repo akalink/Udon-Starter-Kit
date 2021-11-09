@@ -1,4 +1,5 @@
 ﻿
+using TMPro;
 using UdonSharp;
 using UnityEditor;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace StarterKit
     public class handtracker : UdonSharpBehaviour
     {
         public bool allowVRHandCollision = true;
+        public TextMeshProUGUI logger;
         private HumanBodyBones LeftBone;
         private HumanBodyBones RightBone;
 
@@ -17,7 +19,19 @@ namespace StarterKit
         private bool isNull = false;
         private Transform[] trackedPoints;
         
+        private void LoggerPrint(string text)
+        {
+            if (logger != null)
+            {
+                logger.text += "-" + this.name + "-" + text + "\n";
+            }
+        }
 
+        #region InitializeAllTheThings
+
+        
+
+        
         void Start()
         {
             if (Networking.LocalPlayer == null)
@@ -26,31 +40,35 @@ namespace StarterKit
                 return;
             }
             LocalPlayer = Networking.LocalPlayer;
-            if (allowVRHandCollision)
+            /*if (allowVRHandCollision)
             {
                 allowVRHandCollision = _Checkbones();
-            }
+            }*/
+            
             trackedPoints = GetComponentsInChildren<Transform>();
-            Debug.Log("Length of tracked array " + trackedPoints.Length);
-            SendCustomEventDelayedSeconds(nameof(CheckVR), 1);
+            
+            CheckVR();
         }
-
         public void CheckVR()
         {
-            Debug.Log("It delayed 1 second to check vr");
             if (allowVRHandCollision)
             {
                 allowVRHandCollision = LocalPlayer.IsUserInVR();
-                Debug.Log("tracking bool is " + allowVRHandCollision);
-                
+                if (allowVRHandCollision)
+                {
+                    allowVRHandCollision = _Checkbones();
+                }
+                LoggerPrint("VR and bone check returned " + allowVRHandCollision);
             }
             
             if (!allowVRHandCollision)
             {
                 trackedPoints[1].gameObject.SetActive(false);
                 trackedPoints[2].gameObject.SetActive(false);
+                LoggerPrint("Hand Colliders are disabled");
             }
         }
+        
 
         public bool _Checkbones()
         {
@@ -79,6 +97,7 @@ namespace StarterKit
 
             return returnIfAssigned;
         }
+        #endregion
 
         private void Update()
         {
