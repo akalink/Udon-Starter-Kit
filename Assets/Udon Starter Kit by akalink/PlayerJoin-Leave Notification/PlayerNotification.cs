@@ -11,9 +11,10 @@ namespace StarterKit
 {
     public class PlayerNotification : UdonSharpBehaviour
     {
-        [Header("Notifies everyone in the instance a player has joined or left. Can be done via sound or naming the player")]
+        [Header(
+            "Notifies everyone in the instance a player has joined or left. Can be done via sound or naming the player")]
+        public TextMeshProUGUI logger;
         public string joinInstanceText = "has joined the world.";
-
         public string leaveInstanceText = "has left the world.";
         private TextMeshProUGUI ssText;
         private bool readyToDisplay = true;
@@ -25,17 +26,24 @@ namespace StarterKit
         private int _unclaimedQueueEnd = 0;
         private int _queueBufferSize = 10;
 
+        private void LoggerPrint(string text)
+        {
+            if (logger != null)
+            {
+                logger.text += "-" + this.name + "-" + text + "\n";
+            }
+        }
+        
         void Start()
         {
             ssText = this.GetComponentInChildren<TextMeshProUGUI>();
             anim = this.GetComponent<Animator>();
-            
             _FillUnclaimedIndexQueue();
-            
         }
 
         public override void OnPlayerJoined(VRCPlayerApi player)
         {
+            LoggerPrint(player.displayName + " has joined and will trigger the animation / que");
             string tempText = player.displayName + " " + joinInstanceText;
             if (readyToDisplay)
             {
@@ -45,13 +53,12 @@ namespace StarterKit
             {
                 _EnqueueItemToUnclaimedQueue(tempText);
             }
-
             readyToDisplay = false;
         }
 
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
-            
+            LoggerPrint(player.displayName + " has left and will trigger the animation / que");
             string tempText = player.displayName + " " + leaveInstanceText;
             if (readyToDisplay)
             {
@@ -75,7 +82,6 @@ namespace StarterKit
             // If the queue is empty, return invalid.
             if (_UnclaimedQueueCount() <= 0)
             {
-                Debug.Log("this returned the first thing");
                 return "";
             }
 
@@ -87,7 +93,7 @@ namespace StarterKit
             string element = _unclaimedQueue[index];
             // Clear the value at this index to ensure old elements are never reused.
             _unclaimedQueue[index] = "";
-            
+            LoggerPrint(index + " index value is now reinitialized");
             return element;
         }
 
@@ -100,12 +106,7 @@ namespace StarterKit
             {
                 // Ensure queue is initialized with -1.
                 _unclaimedQueue[i] = "";
-                
-                // If the current index does not have a player assigned, add it to the queue.
-                /*if (_assignment[i] == -1)
-                {
-                    _EnqueueItemToUnclaimedQueue(i);
-                }*/
+                LoggerPrint(i + " index value is now initialized");
             }
         }
 
@@ -115,33 +116,33 @@ namespace StarterKit
         {
             if (_UnclaimedQueueCount() >= _unclaimedQueue.Length)
             {
-                Debug.Log("Trying to queue an item when the queue is full!");
+                LoggerPrint("The Que is full");
                 return;
             }
             
             // Get the index for the end of the queue and increment the value.
             int index = _unclaimedQueueEnd % _unclaimedQueue.Length;
             ++_unclaimedQueueEnd;
-            Debug.Log("enqueue value " + value + "index is " + index);
+            
+            LoggerPrint("The value of the ques index is "+ index);
             _unclaimedQueue[index] = value;
         }
 
         public void _DisplayUIText(string text)
         {
+            LoggerPrint(text + " text has been animated on the player view");
             ssText.text = text;
             anim.SetTrigger(animName);
         }
 
         public void _AnimMakesReady()
         {
+            LoggerPrint("The animation has finished");
             readyToDisplay = true;
-            Debug.Log("the animator got here");
             string tempText = _DequeueItemFromUnclaimedQueue();
-            Debug.Log("retunred dequeue with" + tempText);
             if (tempText != "")
             {
                 readyToDisplay = false;
-                Debug.Log("there is a name");
                 _DisplayUIText(tempText);
             }
         }
