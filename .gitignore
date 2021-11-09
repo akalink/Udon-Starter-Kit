@@ -69,3 +69,15 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Asset ignoring
+Assets/*
+*.asset
+*.json
+*.cs
+ProjectVersion.txt
+*.meta
+*.asmdef
+
+!Assets/Udon Starter Kit by akalink
+!Assets/Udon Starter Kit by akalink/**/*.*
