@@ -1,4 +1,5 @@
 ﻿
+using TMPro;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -18,11 +19,20 @@ namespace StarterKit
         private Transform[] teleportPoints;
         [Header("Add the DoorLock prefab to make this teleport able to be turned off")]
         public DoorLock lockable;
+        public TextMeshProUGUI logger;
+        private void LoggerPrint(string text)
+        {
+            if (logger != null)
+            {
+                logger.text += "-" + this.name + "-" + text + "\n";
+            }
+        }
         void Start()
         {
             teleportPoints = GetComponentsInChildren<Transform>();
-            
+            LoggerPrint(teleportPoints.Length + " of 6 transforms are found");
             DisableInteractive = !viaInteraction;
+            LoggerPrint("Interaction is set to " + viaInteraction);
         }
 
         public override void Interact()
@@ -36,6 +46,7 @@ namespace StarterKit
                         return;
                     }
                 }
+                LoggerPrint(Networking.LocalPlayer.displayName + " has successfully interacted to teleport");
                 TeleportPlayer(Networking.LocalPlayer);
             }
         }
@@ -51,6 +62,7 @@ namespace StarterKit
                         return;
                     }
                 }
+                LoggerPrint(player.displayName + " has successfully entered a trigger to teleport");
                 TeleportPlayer(player);
             }
         }
@@ -70,10 +82,12 @@ namespace StarterKit
                 teleportPoints[3].localPosition = teleportPoints[1].localPosition; //sets position of child of destination to be the same realative position as child of origin
                 teleportPoints[3].localRotation = teleportPoints[1].localRotation; //ditto but with rotation
                 player.TeleportTo(teleportPoints[3].position, teleportPoints[3].rotation); //sets player to be in the position of child of destination.
+                LoggerPrint(player.displayName+ " has teleported seamlessly");
             }
             else
             {
                 player.TeleportTo(teleportPoints[2].position, teleportPoints[2].rotation);
+                LoggerPrint(player.displayName + " has teleported normally");
             }
         }
     }
