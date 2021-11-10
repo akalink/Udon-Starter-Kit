@@ -80,5 +80,6 @@ ProjectVersion.txt
 *.meta
 *.asmdef
 
+!raw files
 !Assets/Udon Starter Kit
 !Assets/Udon Starter Kit/**/*.*
