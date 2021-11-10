@@ -1,4 +1,5 @@
 ﻿
+using System;
 using TMPro;
 using UdonSharp;
 using UnityEngine;
@@ -34,6 +35,7 @@ namespace StarterKit
             DisableInteractive = !viaInteraction;
             LoggerPrint("Interaction is set to " + viaInteraction);
         }
+        
 
         public override void Interact()
         {
