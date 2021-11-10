@@ -9,7 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
-/[.i]dea/
+/[..]Idea/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -80,5 +80,5 @@ ProjectVersion.txt
 *.meta
 *.asmdef
 
-!Assets/Udon Starter Kit by akalink
-!Assets/Udon Starter Kit by akalink/**/*.*
+!Assets/Udon Starter Kit
+!Assets/Udon Starter Kit/**/*.*
