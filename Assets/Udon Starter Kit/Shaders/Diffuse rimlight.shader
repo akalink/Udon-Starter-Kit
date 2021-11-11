@@ -31,6 +31,7 @@ Shader "akalink/diffuse rimlight"
 		#endif
 		struct Input
 		{
+			float4 vertexColor : COLOR;
 			float2 uv_texcoord;
 			float3 viewDir;
 			INTERNAL_DATA
@@ -48,7 +49,7 @@ Shader "akalink/diffuse rimlight"
 		{
 			o.Normal = float3(0,0,1);
 			float2 uv_MainTex = i.uv_texcoord * _MainTex_ST.xy + _MainTex_ST.zw;
-			o.Albedo = ( _Color * tex2D( _MainTex, uv_MainTex ) ).rgb;
+			o.Albedo = ( i.vertexColor * _Color * tex2D( _MainTex, uv_MainTex ) ).rgb;
 			float2 uv_Normals = i.uv_texcoord * _Normals_ST.xy + _Normals_ST.zw;
 			float3 normalizeResult10 = normalize( i.viewDir );
 			float dotResult7 = dot( UnpackNormal( tex2D( _Normals, uv_Normals ) ) , normalizeResult10 );
@@ -87,6 +88,7 @@ Shader "akalink/diffuse rimlight"
 				float4 tSpace0 : TEXCOORD2;
 				float4 tSpace1 : TEXCOORD3;
 				float4 tSpace2 : TEXCOORD4;
+				half4 color : COLOR0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -109,6 +111,7 @@ Shader "akalink/diffuse rimlight"
 				o.customPack1.xy = customInputData.uv_texcoord;
 				o.customPack1.xy = v.texcoord;
 				TRANSFER_SHADOW_CASTER_NORMALOFFSET( o )
+				o.color = v.color;
 				return o;
 			}
 			half4 frag( v2f IN
@@ -127,6 +130,7 @@ Shader "akalink/diffuse rimlight"
 				surfIN.internalSurfaceTtoW0 = IN.tSpace0.xyz;
 				surfIN.internalSurfaceTtoW1 = IN.tSpace1.xyz;
 				surfIN.internalSurfaceTtoW2 = IN.tSpace2.xyz;
+				surfIN.vertexColor = IN.color;
 				SurfaceOutputStandard o;
 				UNITY_INITIALIZE_OUTPUT( SurfaceOutputStandard, o )
 				surf( surfIN, o );
@@ -143,7 +147,7 @@ Shader "akalink/diffuse rimlight"
 }
 /*ASEBEGIN
 Version=18912
-654;73;908;655;1092.507;307.0167;1.429267;True;False
+729;73;664;655;1006.75;578.5768;1.429267;True;False
 Node;AmplifyShaderEditor.ViewDirInputsCoordNode;9;-1760.97,255.0739;Float;False;Tangent;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.SamplerNode;8;-1722.32,0.2519517;Inherit;True;Property;_Normals;Normals;4;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;True;bump;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;1;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.NormalizeNode;10;-1542.337,248.0388;Inherit;True;False;1;0;FLOAT3;0,0,0;False;1;FLOAT3;0
@@ -155,8 +159,9 @@ Node;AmplifyShaderEditor.ColorNode;2;-771.9086,555.0919;Float;False;Property;_Ri
 Node;AmplifyShaderEditor.PowerNode;3;-796.1742,174.6931;Inherit;True;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;11;-621.8101,-37.02895;Inherit;True;Property;_MainTex;MainTex;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.ColorNode;12;-562.5433,-218.3154;Inherit;False;Property;_Color;Color;1;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.VertexColorNode;14;-549.3844,-409.9235;Inherit;False;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;1;-523.3087,390.4924;Inherit;True;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;13;-243.5486,-66.66235;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;13;-243.5486,-66.66235;Inherit;False;3;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.StandardSurfaceOutputNode;0;0,0;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;akalink/diffuse rimlight;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;Back;0;False;-1;0;False;-1;False;0;False;-1;0;False;-1;False;0;Opaque;0.5;True;True;0;False;Opaque;;Geometry;All;18;all;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;0;0;False;-1;0;False;-1;0;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;False;0.1;False;-1;0;False;-1;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
 WireConnection;10;0;9;0
 WireConnection;7;0;8;0
@@ -167,9 +172,10 @@ WireConnection;3;0;4;0
 WireConnection;3;1;5;0
 WireConnection;1;0;3;0
 WireConnection;1;1;2;0
-WireConnection;13;0;12;0
-WireConnection;13;1;11;0
+WireConnection;13;0;14;0
+WireConnection;13;1;12;0
+WireConnection;13;2;11;0
 WireConnection;0;0;13;0
 WireConnection;0;2;1;0
 ASEEND*/
-//CHKSM=3949383FC11A5E9719C784D642B7201D6C8BF8E3
+//CHKSM=56CAE9D801F658FC372EBC62C09177233E99BE98
