@@ -112,8 +112,6 @@ namespace StarterKit
                     trackedPoints[2].position = LocalPlayer.GetBonePosition(LeftBone);
                 }
             }
-
-
         }
     }
 }
