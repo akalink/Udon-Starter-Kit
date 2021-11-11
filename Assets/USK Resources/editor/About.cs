@@ -49,7 +49,7 @@ namespace StarterKit
             GUILayout.Label("Welcome to Udon Starter Kit", EditorStyles.boldLabel);
             GUILayout.Space(10);
             GUILayout.Label("Udon Starter Kit is a series of assets I have developed to get the beginner world developer started without the need to start learning how to use Udon right out the gate. As they progress they will be able to integrate their code from this package with their own custom scripts. On top of udon script and prefabs, there is also an assortment of shaders and editor scripts. While built for beginners, developers of all skill levels will find some value from this package.", text);
-            GUILayout.Label("If you would like to make suggestions, report issues, or just follow my work, please feel follow me on my social media channels", text);
+            GUILayout.Label("If you would like to make suggestions, report issues, or just follow my work, please feel free to follow me on my social media channels", text);
             
             //GUILayout.Label("MIT License\n \nCopyright (c) 2021 Garrett McPherson");
             GUILayout.FlexibleSpace();
