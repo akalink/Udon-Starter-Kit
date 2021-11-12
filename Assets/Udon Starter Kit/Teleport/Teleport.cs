@@ -69,7 +69,7 @@ namespace StarterKit
             }
         }
 
-        public void TeleportPlayer(VRCPlayerApi player)
+        private void TeleportPlayer(VRCPlayerApi player)
         {
             if (seamless)
             {

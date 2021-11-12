@@ -11,7 +11,7 @@ namespace StarterKit
     {
         public Transform anchor;
 
-        [MenuItem("Udon Starter Kit/Mesh Tools")]
+        [MenuItem("Udon Starter Kit/Mesh Tools", false, 39)]
         public static void ShowWindow()
         {
             MeshTools window = (MeshTools) GetWindow(typeof(MeshTools));
