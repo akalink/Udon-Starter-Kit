@@ -9,7 +9,7 @@ namespace StarterKit
     public class MoreTools : EditorWindow
     {
         private static Texture iconCyanEmu, iconCyanTriggers, iconPrefabs, iconVRWTC, iconEQS, iconWCA, iconUsharp; 
-        [MenuItem("Udon Starter Kit/Suggested Resources")]
+        [MenuItem("Udon Starter Kit/Suggested Resources", false, 42)]
         public static void SetWindow()
         {
             var window = (MoreTools) GetWindow(typeof(MoreTools), true, "Udon Starter Kit");
