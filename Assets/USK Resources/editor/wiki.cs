@@ -10,7 +10,7 @@ namespace StarterKit
         [MenuItem("Udon Starter Kit/Wiki", false, 41)]
         private static void WikiLink()
         {
-            Application.OpenURL("https://vrcprefabs.com/browse");
+            Application.OpenURL("https://garrett-mcpherson.gitbook.io/udon-starter-kit-wiki/");
         }
     
     }

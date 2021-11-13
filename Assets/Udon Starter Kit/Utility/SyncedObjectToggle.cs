@@ -10,6 +10,7 @@ namespace StarterKit
     public class SyncedObjectToggle : UdonSharpBehaviour
     {
         [Header("Takes a input of Game Objects and toggles them on or off based on their original state")]
+        [Header("Alternative, toggle objects either on or off using Public Methods")]
         public bool Synced = false;
         public GameObject[] objects;
         [UdonSynced()] private bool[] objectsBoolSynched;
@@ -40,33 +41,55 @@ namespace StarterKit
         {
             if (!noRange)
             {
-                SendCustomNetworkEvent(NetworkEventTarget.All,nameof(ToggleObjects));
+                if (Synced)
+                {
+                    SendCustomNetworkEvent(NetworkEventTarget.All,nameof(ToggleObjects));
+                }
+                else
+                {
+                    ToggleObjects();
+                }
+                
             }
             
         }
 
         public void ToggleObjects()
         {
-            if (Networking.LocalPlayer.IsOwner(gameObject))
-            {
-                if (Synced)
-                {
-                    for (int i = 0; i < objectsBoolSynched.Length; i++)
-                    {
-                        objectsBoolSynched[i] = !objectsBoolSynched[i];
+            if (Synced)
+            { 
+                if (Networking.LocalPlayer.IsOwner(gameObject)) 
+                { 
+                    for (int i = 0; i < objectsBoolSynched.Length; i++) 
+                    { 
+                        objectsBoolSynched[i] = !objectsBoolSynched[i]; 
+                        RequestSerialization(); 
+                        IterateThroughObjects();
                     }
                 }
-                else
-                {
-                    for (int i = 0; i < objectsBoolLocal.Length; i++)
-                    {
-                        objectsBoolLocal[i] = !objectsBoolLocal[i];
-                    }
+            }
+            else 
+            { 
+                for (int i = 0; i < objectsBoolLocal.Length; i++) 
+                { 
+                    objectsBoolLocal[i] = !objectsBoolLocal[i];
+                    IterateThroughObjects();
+                    
                 }
-                RequestSerialization();
-                IterateThroughObjects();
             }
         }
+
+        public void SetFalse()
+        {
+            
+        }
+
+        public void SetTrue()
+        {
+            
+        }
+        
+        
 
         private void IterateThroughObjects()
         {
