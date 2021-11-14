@@ -16,7 +16,7 @@ namespace StarterKit
         [Header("Highly recommended to read the wiki, setting this up is not drag and drop")]
         public String[] names;
         [UdonSynced()] private int[] syncedIDs;
-        private PositionConstraint[] assignTags;
+        private ParentConstraint[] assignTags;
         private Transform resetPosition;
         private bool noRange = false;
         private bool assignedObject = false;
@@ -40,8 +40,9 @@ namespace StarterKit
             }
 
             resetPosition = GetComponent<Transform>();
-            assignTags = GetComponentsInChildren<PositionConstraint>(true);
-            syncedIDs = new int[assignTags.Length];
+            assignTags = GetComponentsInChildren<ParentConstraint>(true);
+            Debug.Log("tag length = " + assignTags.Length);
+            syncedIDs = new int[assignTags.Length - 1];
             for (int i = 0; i < syncedIDs.Length; i++)
             {
                 syncedIDs[i] = -1;
@@ -128,8 +129,8 @@ namespace StarterKit
                 if (syncedIDs[i] == tempID)
                 {
                     syncedIDs[i] = -1;
-                    assignTags[i].enabled = false;
-                    assignTags[i].gameObject.transform.position = resetPosition.position;
+                    assignTags[i+1].enabled = false;
+                    assignTags[i+1].gameObject.transform.position = resetPosition.position;
                     RequestSerialization();
                     return;
                 }
@@ -154,8 +155,8 @@ namespace StarterKit
                 if (syncedIDs[i] == tempID)
                 {
                     LoggerPrint(Networking.LocalPlayer.displayName + " their ID matched and are assigned a object");
-                    Networking.SetOwner(Networking.LocalPlayer, assignTags[i].gameObject);
-                    assignTags[i].enabled = true;
+                    Networking.SetOwner(Networking.LocalPlayer, assignTags[i+1].gameObject);
+                    assignTags[i+1].enabled = true;
                     assignedObject = true;
                 }
             }
