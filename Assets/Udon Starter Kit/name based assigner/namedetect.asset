@@ -213,7 +213,7 @@ MonoBehaviour:
       Data: 15|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: UnityEngine.Animations.PositionConstraint[], UnityEngine.AnimationModule
+      Data: UnityEngine.Animations.ParentConstraint[], UnityEngine.AnimationModule
     - Name: 
       Entry: 8
       Data: 
@@ -225,7 +225,7 @@ MonoBehaviour:
       Data: 0
     - Name: symbolResolvedTypeName
       Entry: 1
-      Data: UnityEngineAnimationsPositionConstraintArray
+      Data: UnityEngineAnimationsParentConstraintArray
     - Name: symbolOriginalName
       Entry: 1
       Data: assignTags
