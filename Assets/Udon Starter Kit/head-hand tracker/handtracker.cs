@@ -11,6 +11,7 @@ namespace StarterKit
     public class handtracker : UdonSharpBehaviour
     {
         public bool allowVRHandCollision = true;
+        private bool fingerCollision = false;
         public TextMeshProUGUI logger;
         private HumanBodyBones LeftBone;
         private HumanBodyBones RightBone;
@@ -28,10 +29,6 @@ namespace StarterKit
         }
 
         #region InitializeAllTheThings
-
-        
-
-        
         void Start()
         {
             if (Networking.LocalPlayer == null)
@@ -56,7 +53,7 @@ namespace StarterKit
                 allowVRHandCollision = LocalPlayer.IsUserInVR();
                 if (allowVRHandCollision)
                 {
-                    allowVRHandCollision = _Checkbones();
+                    fingerCollision = _Checkbones();
                 }
                 LoggerPrint("VR and bone check returned " + allowVRHandCollision);
             }
@@ -108,8 +105,17 @@ namespace StarterKit
 
                 if (allowVRHandCollision)
                 {
-                    trackedPoints[1].position = LocalPlayer.GetBonePosition(RightBone);
-                    trackedPoints[2].position = LocalPlayer.GetBonePosition(LeftBone);
+                    if (fingerCollision)
+                    {
+                        trackedPoints[1].position = LocalPlayer.GetBonePosition(RightBone);
+                        trackedPoints[2].position = LocalPlayer.GetBonePosition(LeftBone);
+                    }
+                    else
+                    {
+                        trackedPoints[1].position = LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.RightHand).position;
+                        trackedPoints[2].position = LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.LeftHand).position;
+                    }
+                    
                 }
             }
         }

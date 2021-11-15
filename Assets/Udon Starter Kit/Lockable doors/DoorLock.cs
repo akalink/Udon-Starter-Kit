@@ -9,6 +9,7 @@ namespace StarterKit
 {
     public class DoorLock : UdonSharpBehaviour
     {
+        [Header("Assign to the teleport or automatic doors to add a locking mechanism to them.")]
         public bool allowVrHandCollision = true;
         public TextMeshProUGUI logger;
         [UdonSynced()] private int iDplayer = -1;
@@ -79,7 +80,7 @@ namespace StarterKit
         }
         #endregion
 
-        public bool _TeleportCheck()
+        public bool _LockCheck()
         {
             if (iDplayer != -1)
             {

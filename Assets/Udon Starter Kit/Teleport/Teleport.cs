@@ -43,7 +43,7 @@ namespace StarterKit
             {
                 if (lockable != null)
                 {
-                    if (!lockable._TeleportCheck())
+                    if (!lockable._LockCheck())
                     {
                         return;
                     }
@@ -59,7 +59,7 @@ namespace StarterKit
             {
                 if (lockable != null)
                 {
-                    if (!lockable._TeleportCheck())
+                    if (!lockable._LockCheck())
                     {
                         return;
                     }
@@ -75,7 +75,7 @@ namespace StarterKit
             {
                 if (lockable != null)
                 {
-                    if (!lockable._TeleportCheck())
+                    if (!lockable._LockCheck())
                     {
                         return;
                     }
