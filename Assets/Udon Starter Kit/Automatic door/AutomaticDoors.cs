@@ -12,7 +12,7 @@ namespace StarterKit
     {
         [Header("A door that will automatically Open when you walk towards it. Can be networked or not.")]
         public bool networked = false;
-
+        public DoorLock lockable;
         public TextMeshProUGUI logger;
         private Animator doorAnim;
         private string doorAnimName = "Open";
@@ -49,6 +49,14 @@ namespace StarterKit
 
         public void EnterTriggerZone()
         {
+            if (lockable != null)
+            {
+                if (!lockable._LockCheck())
+                {
+                    doorAnim.SetBool(doorAnimName, false);
+                    return;
+                }
+            }
             doorAnim.SetBool(doorAnimName, true);
             storePlayersInCollider++;
             LoggerPrint("The stored value of players is "+ storePlayersInCollider);

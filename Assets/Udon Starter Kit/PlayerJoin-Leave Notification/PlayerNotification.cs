@@ -25,6 +25,7 @@ namespace StarterKit
         private int _unclaimedQueueStart = 0;
         private int _unclaimedQueueEnd = 0;
         private int _queueBufferSize = 10;
+        private bool toggledOn = true;
 
         private void LoggerPrint(string text)
         {
@@ -40,9 +41,15 @@ namespace StarterKit
             anim = this.GetComponent<Animator>();
             _FillUnclaimedIndexQueue();
         }
+        
+        public void _ToggleSystem()
+        {
+            toggledOn = !toggledOn;
+        }
 
         public override void OnPlayerJoined(VRCPlayerApi player)
         {
+            if(!toggledOn){return;}
             LoggerPrint(player.displayName + " has joined and will trigger the animation / que");
             string tempText = player.displayName + " " + joinInstanceText;
             if (readyToDisplay)
@@ -58,6 +65,7 @@ namespace StarterKit
 
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
+            if(!toggledOn){return;}
             LoggerPrint(player.displayName + " has left and will trigger the animation / que");
             string tempText = player.displayName + " " + leaveInstanceText;
             if (readyToDisplay)
@@ -76,6 +84,7 @@ namespace StarterKit
         {
             return _unclaimedQueueEnd - _unclaimedQueueStart;
         }
+        
         
         private string _DequeueItemFromUnclaimedQueue()
         {
