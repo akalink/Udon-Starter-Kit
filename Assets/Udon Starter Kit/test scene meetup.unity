@@ -6019,6 +6019,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 963194227, guid: f66505c82d9c71f479be06f629e2f1c8, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 963194227, guid: f66505c82d9c71f479be06f629e2f1c8, type: 3}
+      propertyPath: orthographic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 963194227, guid: f66505c82d9c71f479be06f629e2f1c8, type: 3}
+      propertyPath: orthographic size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 963194227, guid: f66505c82d9c71f479be06f629e2f1c8, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.8117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 963194227, guid: f66505c82d9c71f479be06f629e2f1c8, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.5411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 963194227, guid: f66505c82d9c71f479be06f629e2f1c8, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.03137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 963194228, guid: f66505c82d9c71f479be06f629e2f1c8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -40.36
+      objectReference: {fileID: 0}
     - target: {fileID: 5319405805650896954, guid: f66505c82d9c71f479be06f629e2f1c8,
         type: 3}
       propertyPath: m_AnchorMax.x

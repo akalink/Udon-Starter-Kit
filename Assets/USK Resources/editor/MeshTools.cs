@@ -10,6 +10,7 @@ namespace StarterKit
     public class MeshTools : EditorWindow
     {
         public Transform anchor;
+        public Mesh MeshWithVertexColors;
 
         [MenuItem("Udon Starter Kit/Mesh Tools", false, 39)]
         public static void ShowWindow()
@@ -97,6 +98,15 @@ namespace StarterKit
                         renderer.probeAnchor = null;
                     }
                 }
+            }
+            
+            MeshWithVertexColors = EditorGUILayout.ObjectField("Mesh Object", MeshWithVertexColors, typeof(Mesh), true) as Mesh;
+            if (GUILayout.Button("Remove Vertex Colors"))
+            {
+                Color32[] vertexColors32 = null;
+                MeshWithVertexColors.colors32 = vertexColors32;
+                Debug.Log(MeshWithVertexColors.colors32.Length );
+                
             }
             
             GUILayout.Label("\n(Re)Generates UV2 on the selected meshes");

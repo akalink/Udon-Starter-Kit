@@ -9,10 +9,11 @@ namespace StarterKit
 {
     public class MonthTrigger : UdonSharpBehaviour
     {
-        [Header("Gets the month of the year as enable/triggers based on that data")]
+        
         [UdonSynced()] private int monthInt;
         private DateTime masterTime;
-
+        [Header("Gets the month of the year as enable/triggers based on that data")]
+        [Header("Assign multiple objects to a single gameObject and set that object inactive, assign that object here")]
         public Animator allMonthsAnimator;
         public string animatorIntName;
         #region Month variables
