@@ -14,6 +14,7 @@ namespace StarterKit
     {
         [Header("Assigns a object to specified users, requires a head tracker in your scene.")]
         [Header("Highly recommended to read the wiki, setting this up is not drag and drop")]
+        [Header("Udon Starter Kit >> Wiki")]
         public String[] names;
         [UdonSynced()] private int[] syncedIDs;
         private ParentConstraint[] assignTags;

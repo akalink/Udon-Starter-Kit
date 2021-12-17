@@ -11,6 +11,7 @@ namespace StarterKit
     {
         private int folderIndex = 0;
         public GameObject userPrefab;
+        public Mesh MeshObject;
 
         [MenuItem("Udon Starter Kit/Object Tools", false, 38)]
 
@@ -88,6 +89,21 @@ namespace StarterKit
                         light.lightmapBakeType = LightmapBakeType.Baked;
                     }
                 }
+            }
+            
+            MeshObject = EditorGUILayout.ObjectField("Mesh Object", MeshObject, typeof(Mesh), true) as Mesh;
+            
+            if (GUILayout.Button("Override Mesh Filter"))
+            {
+                foreach (var obj in Selection.gameObjects)
+                {
+                    if (obj.GetComponent<MeshFilter>() != null)
+                    {
+                        MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
+                        meshFilter.mesh = MeshObject;
+                    }
+                }
+                
             }
 
             GUILayout.Label("Additional tools are to be added with time.");

@@ -26,6 +26,7 @@ namespace StarterKit
         private int _unclaimedQueueEnd = 0;
         private int _queueBufferSize = 10;
         private bool toggledOn = true;
+        private AudioSource _audioSouce;
 
         private void LoggerPrint(string text)
         {
@@ -39,6 +40,7 @@ namespace StarterKit
         {
             ssText = this.GetComponentInChildren<TextMeshProUGUI>();
             anim = this.GetComponent<Animator>();
+            _audioSouce = GetComponent<AudioSource>();
             _FillUnclaimedIndexQueue();
         }
         
@@ -142,6 +144,11 @@ namespace StarterKit
             LoggerPrint(text + " text has been animated on the player view");
             ssText.text = text;
             anim.SetTrigger(animName);
+            if (_audioSouce != null)
+            {
+                LoggerPrint("The Notification Sound has Played");
+                _audioSouce.Play();
+            }
         }
 
         public void _AnimMakesReady()

@@ -10,6 +10,7 @@ namespace StarterKit
 {
     public class handtracker : UdonSharpBehaviour
     {
+        [Header("A system that will follow the players head and allow them to press buttons with their hands while in vr")]
         public bool allowVRHandCollision = true;
         private bool fingerCollision = false;
         public TextMeshProUGUI logger;
