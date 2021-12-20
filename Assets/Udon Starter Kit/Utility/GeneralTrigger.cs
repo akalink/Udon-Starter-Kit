@@ -17,6 +17,11 @@ namespace StarterKit
         public UdonBehaviour behaviour;
         public Animator animator;
         public String methodOrTriggerName;
+        public bool visualFeedbackToggle = false;
+        public string visualMaterialPropertyName = "_EmissionColor";
+        private bool visualFeedbackState = false;
+        
+        private Renderer renderer;
         [Header("True = Udon Method, False = Animation Trigger")]
         public bool udonOrAnimator = true;
         [Header("True = Interact, False = Trigger (or zone)")]
@@ -34,6 +39,7 @@ namespace StarterKit
 
         private void Start()
         {
+            renderer = GetComponent<Renderer>();
             SendCustomEventDelayedSeconds(nameof(VRCheck), 1);
             if (!isInteractOrTrigger)
             {
@@ -63,6 +69,7 @@ namespace StarterKit
 
         public void ProperCall()
         {
+            MaterialState();
             if (udonOrAnimator)
             {
                 
@@ -77,6 +84,38 @@ namespace StarterKit
             {
                 SendCustomEventDelayedSeconds(nameof(FollowUpCall), followUpTime);
             }
+        }
+
+        public void MaterialState()
+        {
+            if (visualFeedbackToggle)
+            {
+                if (visualFeedbackState)
+                {
+                    SetMaterialColor(Color.black);
+                    visualFeedbackState = false;
+                }
+                else
+                {
+                    SetMaterialColor(Color.white);
+                    visualFeedbackState = true;
+                }
+            }
+            else
+            {
+                SetMaterialColor(Color.white);
+                SendCustomEventDelayedFrames(nameof(ResetMaterialState), 30);
+            }
+        }
+
+        public void SetMaterialColor(Color color)
+        {
+            renderer.material.SetColor(visualMaterialPropertyName, color);
+        }
+
+        public void ResetMaterialState()
+        {
+            SetMaterialColor(Color.black);
         }
 
         public void FollowUpCall()
