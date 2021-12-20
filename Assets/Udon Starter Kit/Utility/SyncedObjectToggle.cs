@@ -62,10 +62,10 @@ namespace StarterKit
                 { 
                     for (int i = 0; i < objectsBoolSynched.Length; i++) 
                     { 
-                        objectsBoolSynched[i] = !objectsBoolSynched[i]; 
-                        RequestSerialization(); 
-                        IterateThroughObjects();
+                        objectsBoolSynched[i] = !objectsBoolSynched[i];
                     }
+                    RequestSerialization(); 
+                    IterateThroughObjects();
                 }
             }
             else 
@@ -73,20 +73,57 @@ namespace StarterKit
                 for (int i = 0; i < objectsBoolLocal.Length; i++) 
                 { 
                     objectsBoolLocal[i] = !objectsBoolLocal[i];
-                    IterateThroughObjects();
-                    
                 }
+                IterateThroughObjects();
             }
         }
 
         public void SetFalse()
         {
-            
+            if (Synced)
+            { 
+                if (Networking.LocalPlayer.IsOwner(gameObject)) 
+                { 
+                    for (int i = 0; i < objectsBoolSynched.Length; i++) 
+                    { 
+                        objectsBoolSynched[i] = false;
+                    }
+                    RequestSerialization(); 
+                    IterateThroughObjects();
+                }
+            }
+            else 
+            { 
+                for (int i = 0; i < objectsBoolLocal.Length; i++) 
+                { 
+                    objectsBoolLocal[i] = false;
+                }
+                IterateThroughObjects();
+            }
         }
 
         public void SetTrue()
         {
-            
+            if (Synced)
+            { 
+                if (Networking.LocalPlayer.IsOwner(gameObject)) 
+                { 
+                    for (int i = 0; i < objectsBoolSynched.Length; i++) 
+                    { 
+                        objectsBoolSynched[i] = true;
+                    }
+                    RequestSerialization(); 
+                    IterateThroughObjects();
+                }
+            }
+            else 
+            { 
+                for (int i = 0; i < objectsBoolLocal.Length; i++) 
+                { 
+                    objectsBoolLocal[i] = true;
+                }
+                IterateThroughObjects();
+            }
         }
         
         

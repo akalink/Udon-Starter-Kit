@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VRC.SDKBase;
 using VRC.Udon;
-
+//// Special Thanks to Cyanlaser who helped me the que logic on this prefab
 namespace StarterKit
 {
     public class PlayerNotification : UdonSharpBehaviour

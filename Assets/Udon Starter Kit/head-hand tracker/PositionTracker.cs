@@ -8,10 +8,11 @@ using VRC.Udon;
 
 namespace StarterKit
 {
-    public class handtracker : UdonSharpBehaviour
+    public class PositionTracker : UdonSharpBehaviour
     {
-        [Header("A system that will follow the players head and allow them to press buttons with their hands while in vr")]
+        [Header("A system that will follow the players position and optionally their head and hands allow them to press buttons with their hands while in vr")]
         public bool allowVRHandCollision = true;
+        public bool allowHeadTracking = true;
         private bool fingerCollision = false;
         public TextMeshProUGUI logger;
         private HumanBodyBones LeftBone;
@@ -38,12 +39,12 @@ namespace StarterKit
                 return;
             }
             LocalPlayer = Networking.LocalPlayer;
-            /*if (allowVRHandCollision)
-            {
-                allowVRHandCollision = _Checkbones();
-            }*/
-            
+
             trackedPoints = GetComponentsInChildren<Transform>();
+            if (!allowHeadTracking)
+            {
+                trackedPoints[3].gameObject.SetActive(false);
+            }
             
             CheckVR();
         }
@@ -101,8 +102,8 @@ namespace StarterKit
         {
             if (!isNull)
             {
-                trackedPoints[0].position = LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
-                trackedPoints[0].rotation = LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
+                trackedPoints[0].position = LocalPlayer.GetPosition();
+                trackedPoints[0].rotation = LocalPlayer.GetRotation();
 
                 if (allowVRHandCollision)
                 {
@@ -117,6 +118,12 @@ namespace StarterKit
                         trackedPoints[2].position = LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.LeftHand).position;
                     }
                     
+                }
+
+                if (allowHeadTracking)
+                {
+                    trackedPoints[3].position = LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
+                    trackedPoints[3].rotation = LocalPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
                 }
             }
         }
