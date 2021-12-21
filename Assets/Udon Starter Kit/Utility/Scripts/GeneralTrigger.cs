@@ -11,17 +11,20 @@ namespace StarterKit
 {
     public class GeneralTrigger : UdonSharpBehaviour
     {
+        
         [Header("A tool that adds allows you to trigger a public method"), Header("or animation for your custom Udon Behavior or Animator")]
         public bool Networked = false;
         public bool allowVRHandCollision = true;
         public UdonBehaviour behaviour;
         public Animator animator;
         public String methodOrTriggerName;
+        public bool allowVisualFeedback = true;
         public bool visualFeedbackToggle = false;
         public string visualMaterialPropertyName = "_EmissionColor";
+        #region private feedback options
         private bool visualFeedbackState = false;
-        
         private Renderer renderer;
+        #endregion
         [Header("True = Udon Method, False = Animation Trigger")]
         public bool udonOrAnimator = true;
         [Header("True = Interact, False = Trigger (or zone)")]
@@ -69,7 +72,11 @@ namespace StarterKit
 
         public void ProperCall()
         {
-            MaterialState();
+            if (allowVisualFeedback)
+            {
+                MaterialState();
+            }
+            
             if (udonOrAnimator)
             {
                 
@@ -88,6 +95,10 @@ namespace StarterKit
 
         public void MaterialState()
         {
+            if (renderer != null)
+            {
+                return;
+            }
             if (visualFeedbackToggle)
             {
                 if (visualFeedbackState)
