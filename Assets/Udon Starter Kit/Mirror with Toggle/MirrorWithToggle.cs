@@ -10,7 +10,7 @@ namespace StarterKit
     public class MirrorWithToggle : UdonSharpBehaviour
     {
         [Header("A set of mirrors that can be toggled on and off.")]
-        [Header("By design this system is meant to be local and will not with 'network' toggled on")]
+        [Header("By design this system is meant to be local and will not work with 'network' toggled on")]
         public TextMeshProUGUI logger;
         
         private Transform[] mirrors;

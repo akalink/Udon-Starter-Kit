@@ -106,7 +106,7 @@ MonoBehaviour:
       Data: 7|UnityEngine.HeaderAttribute, UnityEngine.CoreModule
     - Name: header
       Entry: 1
-      Data: By design this system is meant to be local and will not with 'network'
+      Data: By design this system is meant to be local and will not work with 'network'
         toggled on
     - Name: 
       Entry: 8
