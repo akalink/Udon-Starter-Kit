@@ -3,6 +3,7 @@ using System;
 using Microsoft.SqlServer.Server;
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 using VRC.SDKBase;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
@@ -19,7 +20,8 @@ namespace StarterKit
         public Animator animator;
         public String methodOrTriggerName;
         public bool allowVisualFeedback = true;
-        public bool visualFeedbackToggle = false;
+        public bool visualFeedbackIsToggle = false;
+        public bool toggleIsEnabledAtStart = false;
         public string visualMaterialPropertyName = "_EmissionColor";
         #region private feedback options
         private bool visualFeedbackState = false;
@@ -47,6 +49,10 @@ namespace StarterKit
             if (!isInteractOrTrigger)
             {
                 DisableInteractive = true;
+            }
+            if (visualFeedbackIsToggle && toggleIsEnabledAtStart)
+            {
+                MaterialState();
             }
         }
 
@@ -95,11 +101,11 @@ namespace StarterKit
 
         public void MaterialState()
         {
-            if (renderer != null)
+            if (renderer == null)
             {
                 return;
             }
-            if (visualFeedbackToggle)
+            if (visualFeedbackIsToggle)
             {
                 if (visualFeedbackState)
                 {
@@ -153,6 +159,14 @@ namespace StarterKit
             if (other != null && (other.gameObject.name.Contains(handTrackerName)))
             {
                 GeneralInteractionMethod();
+                if (other.gameObject.name.Contains("L"))
+                {
+                    Networking.LocalPlayer.PlayHapticEventInHand(VRC_Pickup.PickupHand.Left, 0.5f, Single.MaxValue, 0.2f);
+                }
+                else
+                {
+                    Networking.LocalPlayer.PlayHapticEventInHand(VRC_Pickup.PickupHand.Right, 0.5f, Single.MaxValue, 0.2f);
+                }
             }
         }
 

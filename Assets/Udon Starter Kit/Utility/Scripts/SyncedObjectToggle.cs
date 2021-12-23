@@ -37,7 +37,7 @@ namespace StarterKit
             }
         }
 
-        public override void Interact()
+        /*public override void Interact()
         {
             if (!noRange)
             {
@@ -52,21 +52,13 @@ namespace StarterKit
                 
             }
             
-        }
+        }*/
 
         public void ToggleObjects()
         {
             if (Synced)
             { 
-                if (Networking.LocalPlayer.IsOwner(gameObject)) 
-                { 
-                    for (int i = 0; i < objectsBoolSynched.Length; i++) 
-                    { 
-                        objectsBoolSynched[i] = !objectsBoolSynched[i];
-                    }
-                    RequestSerialization(); 
-                    IterateThroughObjects();
-                }
+                SendCustomNetworkEvent(NetworkEventTarget.All, nameof(ToggleObjectsSync));
             }
             else 
             { 
@@ -78,19 +70,25 @@ namespace StarterKit
             }
         }
 
+        public void ToggleObjectsSync()
+        {
+            if (Networking.LocalPlayer.IsOwner(gameObject)) 
+            { 
+                for (int i = 0; i < objectsBoolSynched.Length; i++) 
+                { 
+                    objectsBoolSynched[i] = !objectsBoolSynched[i];
+                }
+                RequestSerialization(); 
+                IterateThroughObjects();
+            }
+        }
+        
+
         public void SetFalse()
         {
             if (Synced)
             { 
-                if (Networking.LocalPlayer.IsOwner(gameObject)) 
-                { 
-                    for (int i = 0; i < objectsBoolSynched.Length; i++) 
-                    { 
-                        objectsBoolSynched[i] = false;
-                    }
-                    RequestSerialization(); 
-                    IterateThroughObjects();
-                }
+                SendCustomNetworkEvent(NetworkEventTarget.All,nameof(SetFalseSync));
             }
             else 
             { 
@@ -102,19 +100,24 @@ namespace StarterKit
             }
         }
 
+        public void SetFalseSync()
+        {
+            if (Networking.LocalPlayer.IsOwner(gameObject)) 
+            { 
+                for (int i = 0; i < objectsBoolSynched.Length; i++) 
+                { 
+                    objectsBoolSynched[i] = false;
+                }
+                RequestSerialization(); 
+                IterateThroughObjects();
+            }
+        }
+
         public void SetTrue()
         {
             if (Synced)
             { 
-                if (Networking.LocalPlayer.IsOwner(gameObject)) 
-                { 
-                    for (int i = 0; i < objectsBoolSynched.Length; i++) 
-                    { 
-                        objectsBoolSynched[i] = true;
-                    }
-                    RequestSerialization(); 
-                    IterateThroughObjects();
-                }
+                SendCustomNetworkEvent(NetworkEventTarget.All,nameof(SetTrueSync));
             }
             else 
             { 
@@ -122,6 +125,19 @@ namespace StarterKit
                 { 
                     objectsBoolLocal[i] = true;
                 }
+                IterateThroughObjects();
+            }
+        }
+
+        public void SetTrueSync()
+        {
+            if (Networking.LocalPlayer.IsOwner(gameObject)) 
+            { 
+                for (int i = 0; i < objectsBoolSynched.Length; i++) 
+                { 
+                    objectsBoolSynched[i] = true;
+                }
+                RequestSerialization(); 
                 IterateThroughObjects();
             }
         }
