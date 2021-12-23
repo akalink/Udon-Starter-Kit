@@ -12,6 +12,7 @@ namespace StarterKit
     {
         private Animator animator;
         private string animatorName = "open";
+        [Header("A prebuilt player enter trigger toggle for Occlusion Portals, to be used with Occlusion Culling")]
         public TextMeshProUGUI logger;
 
         private void LoggerPrint(string text)

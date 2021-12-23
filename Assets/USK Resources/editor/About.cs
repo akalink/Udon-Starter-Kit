@@ -9,7 +9,7 @@ namespace StarterKit
 {
     public class About : EditorWindow
     {
-        private static string versionNumber = "v0.2";
+        private static string versionNumber = "Beta v0.1";
         
         //private static Texture USKLogo;
         private static Texture USKLogo, PatreonIcon, twitterIcon, discordIcon, boothIcon;
