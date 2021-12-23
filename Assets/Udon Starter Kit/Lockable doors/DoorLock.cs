@@ -1,4 +1,5 @@
 ﻿
+using System;
 using TMPro;
 using UdonSharp;
 using UnityEngine;
@@ -12,8 +13,11 @@ namespace StarterKit
         [Header("Assign to the teleport or automatic doors to add a locking mechanism to them.")]
         public bool allowVrHandCollision = true;
         public TextMeshProUGUI logger;
+        public string visualMaterialPropertyName = "_EmissionColor";
         [UdonSynced()] private int iDplayer = -1;
         private bool isLocked = false;
+        private Renderer renderer;
+        private string handTrackerName = "trackhand12345";
 
         private void LoggerPrint(string text)
         {
@@ -23,8 +27,33 @@ namespace StarterKit
             }
         }
 
+        private void Start()
+        {
+            renderer = GetComponent<Renderer>();
+        }
+
         #region Player Interaction
+        public void OnTriggerEnter(Collider other)
+        {
+            if (other != null && (other.gameObject.name.Contains(handTrackerName)))
+            {
+                GeneralInteractionMethod();
+                if (other.gameObject.name.Contains("L"))
+                {
+                    Networking.LocalPlayer.PlayHapticEventInHand(VRC_Pickup.PickupHand.Left, 0.5f, Single.MaxValue, 0.2f);
+                }
+                else
+                {
+                    Networking.LocalPlayer.PlayHapticEventInHand(VRC_Pickup.PickupHand.Right, 0.5f, Single.MaxValue, 0.2f);
+                }
+            }
+        }
         public override void Interact()
+        {
+            GeneralInteractionMethod();
+        }
+
+        private void GeneralInteractionMethod()
         {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
             LoggerPrint(Networking.LocalPlayer + " is now the owner");
@@ -40,6 +69,24 @@ namespace StarterKit
                 DoorIsLocked();
             }
         }
+
+        private void MaterialState()
+        {
+            if (renderer == null)
+            {
+                return;
+            }
+
+            if (isLocked)
+            {
+                renderer.material.SetColor(visualMaterialPropertyName, Color.white);
+            }
+            else
+            {
+                renderer.material.SetColor(visualMaterialPropertyName, Color.black);
+            }
+        }
+
         #endregion
 
         #region Playing Hooky Checks
@@ -109,10 +156,9 @@ namespace StarterKit
                 LoggerPrint("-Synced-The door is Locked");
                 isLocked = true;
             }
-            
+            MaterialState();
         }
         #endregion
-        ////TODO visual button and hand collider functionality
     }
 }
 

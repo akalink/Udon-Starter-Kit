@@ -58,6 +58,7 @@ namespace StarterKit
                 deltaTimeCheck += Time.deltaTime;
                 if (deltaTimeCheck > aSource.clip.length)
                 { 
+                    LoggerPrint("Delta Time Check Exceeded clip leangh at " + deltaTimeCheck);
                     if (synced) 
                     { 
                         clipIndexSync++; 
@@ -78,8 +79,8 @@ namespace StarterKit
                         if (clipIndexLocal >= tracklist.Length)
                         {
                             clipIndexLocal = 0;
-                            UpdateTrackListLocal();
                         }
+                        UpdateTrackListLocal();
                     }
                 }
             }

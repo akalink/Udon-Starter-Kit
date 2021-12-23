@@ -14,6 +14,7 @@ namespace StarterKit
         public TextMeshProUGUI logger;
         
         private Transform[] mirrors;
+        
 
         private void LoggerPrint(string text)
         {
