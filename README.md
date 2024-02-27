@@ -1,4 +1,4 @@
-![alt text](https://cdn.discordapp.com/attachments/848770841738346538/908084557507624990/usk_logo.png)
+![alt text](https://github.com/akalink/Udon-Starter-Kit/blob/main/raw%20files/usk%20logo.png?raw=true)
 **Requirements:**
 [UdonSharp](https://github.com/MerlinVR/UdonSharp),  [VRChat Udon SDK](https://vrchat.com/home/download)
 
