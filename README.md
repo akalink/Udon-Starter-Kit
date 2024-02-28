@@ -1,6 +1,6 @@
 ![alt text](https://github.com/akalink/Udon-Starter-Kit/blob/main/raw%20files/usk%20logo.png?raw=true)
 **Requirements:**
-[UdonSharp](https://github.com/MerlinVR/UdonSharp),  [VRChat Udon SDK](https://vrchat.com/home/download)
+[VRChat Udon SDK](https://vrchat.com/home/download)
 
 [Visit The Udon Starter Kit Wiki](https://garrett-mcpherson.gitbook.io/udon-starter-kit-wiki/)
 
