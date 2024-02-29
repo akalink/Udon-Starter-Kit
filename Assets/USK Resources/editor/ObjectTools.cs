@@ -13,7 +13,7 @@ namespace StarterKit
         public GameObject userPrefab;
         public Mesh MeshObject;
 
-        [MenuItem("Udon Starter Kit/Object Tools", false, 38)]
+        [MenuItem("Window/Udon Starter Kit/Object Tools", false, 38)]
 
         public static void ShowWindow()
         {
@@ -29,15 +29,23 @@ namespace StarterKit
 
             if (GUILayout.Button("Generate World Prefab"))
             {
-                object worldPrefab =
-                    AssetDatabase.LoadAssetAtPath("Assets/VRChat Examples/Prefabs/VRCWorld.prefab", typeof(object));
                 if(GameObject.Find("VRCWorld")){return;}
+                object worldPrefab =
+                    AssetDatabase.LoadAssetAtPath("Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab", typeof(object));
                 if (worldPrefab != null)
                 {
                     PrefabUtility.InstantiatePrefab(worldPrefab as GameObject);
                 }
                 else
                 {
+                    worldPrefab =
+                        AssetDatabase.LoadAssetAtPath("Assets/VRChat Examples/Prefabs/VRCWorld.prefab", typeof(object));
+                    if (worldPrefab != null)
+                    {
+                        PrefabUtility.InstantiatePrefab(worldPrefab as GameObject);
+                        return;
+                    }
+                    
                     Debug.Log("the prefab is missing!! SOMEHOW!!");
                 }
             }
@@ -55,6 +63,14 @@ namespace StarterKit
                 }
                 else
                 {
+                    chairPrefab =
+                        AssetDatabase.LoadAssetAtPath("Assets/VRChat Examples/Prefabs/VRCChair/VRCChair3.prefab",
+                            typeof(object));
+                    if (chairPrefab != null)
+                    {
+                        PrefabUtility.InstantiatePrefab(chairPrefab as GameObject);
+                        return;
+                    }
                     Debug.Log("the prefab is missing!! SOMEHOW!!");
                 }
             }

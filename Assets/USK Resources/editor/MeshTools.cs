@@ -12,7 +12,7 @@ namespace StarterKit
         public Transform anchor;
         public Mesh MeshWithVertexColors;
 
-        [MenuItem("Udon Starter Kit/Mesh Tools", false, 39)]
+        [MenuItem("Window/Udon Starter Kit/Mesh Tools", false, 39)]
         public static void ShowWindow()
         {
             MeshTools window = (MeshTools) GetWindow(typeof(MeshTools));

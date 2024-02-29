@@ -9,12 +9,13 @@ namespace StarterKit
 {
     public class About : EditorWindow
     {
-        private static string versionNumber = "Beta v0.1.1";
+        private static string versionNumber = "Beta v0.2.0";
         
         //private static Texture USKLogo;
         private static Texture USKLogo, PatreonIcon, twitterIcon, discordIcon, boothIcon;
         
-        [MenuItem("Udon Starter Kit/About", false, 43)]
+        
+        [MenuItem("Window/Udon Starter Kit/About", false, 43)]
         public static void SetWindow()
         {
             var window = (About) GetWindow(typeof(About), true, "About Udon Starter Kit");
