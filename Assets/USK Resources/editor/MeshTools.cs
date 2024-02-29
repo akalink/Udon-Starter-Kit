@@ -11,17 +11,19 @@ namespace StarterKit
     {
         public Transform anchor;
         public Mesh MeshWithVertexColors;
+        private static Texture USKLogo;
 
         [MenuItem("Window/Udon Starter Kit/Mesh Tools", false, 39)]
         public static void ShowWindow()
         {
             MeshTools window = (MeshTools) GetWindow(typeof(MeshTools));
             window.Show();
+            USKLogo = Resources.Load("usk-logo-thumbnail") as Texture2D;
         }
 
         private void OnGUI()
         {
-            GUILayout.Label("Mesh Tools", EditorStyles.boldLabel);
+            if(GUILayout.Button(USKLogo,GUIStyle.none))Application.OpenURL("https://github.com/akalink/Udon-Starter-Kit");
             
             GUILayout.Label("\nOutput's the selected objects' details to the unity console");
         

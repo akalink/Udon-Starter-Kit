@@ -12,7 +12,7 @@ namespace StarterKit
         private static string versionNumber = "Beta v0.2.0";
         
         //private static Texture USKLogo;
-        private static Texture USKLogo, PatreonIcon, twitterIcon, discordIcon, boothIcon;
+        private static Texture USKLogo, PatreonIcon, blueSkyIcon, discordIcon, boothIcon;
         
         
         [MenuItem("Window/Udon Starter Kit/About", false, 43)]
@@ -24,7 +24,7 @@ namespace StarterKit
             window.Show();
         
             USKLogo = Resources.Load("usk-logo-thumbnail") as Texture2D;
-            twitterIcon = Resources.Load("icon-twitter") as Texture2D;
+            blueSkyIcon = Resources.Load("icon-bluesky") as Texture2D;
             discordIcon = Resources.Load("icon-discord") as Texture2D;
             PatreonIcon = Resources.Load("icon-patreon") as Texture2D;
             boothIcon = Resources.Load("icon-booth") as Texture2D;
@@ -48,23 +48,23 @@ namespace StarterKit
         {
             if(GUILayout.Button(USKLogo,GUIStyle.none))Application.OpenURL("https://github.com/akalink/Udon-Starter-Kit");
 
-            //GUILayout.Label("Welcome to Udon Starter Kit", EditorStyles.boldLabel);
+            
             GUILayout.Label("Version: " + versionNumber);
             GUILayout.Space(10);
             
             GUILayout.Label("Udon Starter Kit is a series of assets I have developed to get the beginner world developer started without the need to start learning how to use Udon right out the gate. As they progress they will be able to integrate their code from this package with their own custom scripts. On top of udon script and prefabs, there is also an assortment of shaders and editor scripts. While built for beginners, developers of all skill levels will find some value from this package.", text);
             GUILayout.Label("If you would like to make suggestions, report issues, or just follow my work, please feel free to follow me on my social media channels.", text);
             
-            //GUILayout.Label("MIT License\n \nCopyright (c) 2021 Garrett McPherson");
+            
             GUILayout.FlexibleSpace();
             GUILayout.BeginHorizontal();
-            if(GUILayout.Button(twitterIcon,GUIStyle.none))Application.OpenURL("https://twitter.com/McPhersonsound");
+            if(GUILayout.Button(blueSkyIcon,GUIStyle.none))Application.OpenURL("https://bsky.app/profile/mcphersonsound.bsky.social");
             if(GUILayout.Button(PatreonIcon,GUIStyle.none))Application.OpenURL("https://www.patreon.com/mcphersonsound");
             if(GUILayout.Button(discordIcon,GUIStyle.none))Application.OpenURL("https://discord.gg/u4SNU3eRrd");
             if(GUILayout.Button(boothIcon,GUIStyle.none))Application.OpenURL("https://mcphersonsound.booth.pm/");
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
-            GUILayout.Label("MIT License\n \nCopyright (c) 2021 Garrett McPherson");
+            GUILayout.Label("MIT License\n \nCopyright (c) 2021-2024 Garrett McPherson"); //I really want to include my chosen name, but my deadname is my legal name.
             
         }
     }

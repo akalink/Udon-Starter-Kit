@@ -12,6 +12,7 @@ namespace StarterKit
         private int folderIndex = 0;
         public GameObject userPrefab;
         public Mesh MeshObject;
+        private static Texture USKLogo;
 
         [MenuItem("Window/Udon Starter Kit/Object Tools", false, 38)]
 
@@ -19,61 +20,14 @@ namespace StarterKit
         {
             ObjectTools window = (ObjectTools) GetWindow(typeof(ObjectTools));
             window.Show();
+            USKLogo = Resources.Load("usk-logo-thumbnail") as Texture2D;
         }
+        
 
         private void OnGUI()
         {
-            GUILayout.Label("Object Tools", EditorStyles.boldLabel);
-
-            GUILayout.Label("\nGenerate a VRCWorld prefab for your scene");
-
-            if (GUILayout.Button("Generate World Prefab"))
-            {
-                if(GameObject.Find("VRCWorld")){return;}
-                object worldPrefab =
-                    AssetDatabase.LoadAssetAtPath("Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/VRCWorld.prefab", typeof(object));
-                if (worldPrefab != null)
-                {
-                    PrefabUtility.InstantiatePrefab(worldPrefab as GameObject);
-                }
-                else
-                {
-                    worldPrefab =
-                        AssetDatabase.LoadAssetAtPath("Assets/VRChat Examples/Prefabs/VRCWorld.prefab", typeof(object));
-                    if (worldPrefab != null)
-                    {
-                        PrefabUtility.InstantiatePrefab(worldPrefab as GameObject);
-                        return;
-                    }
-                    
-                    Debug.Log("the prefab is missing!! SOMEHOW!!");
-                }
-            }
-
-            GUILayout.Label("Generate a default chair prefab for you scene");
-
-            if (GUILayout.Button("Generate Chair Prefab"))
-            {
-                object chairPrefab =
-                    AssetDatabase.LoadAssetAtPath("Assets/VRChat Examples/Prefabs/VRCChair/VRCChair3.prefab",
-                        typeof(object));
-                if (chairPrefab != null)
-                {
-                    PrefabUtility.InstantiatePrefab(chairPrefab as GameObject);
-                }
-                else
-                {
-                    chairPrefab =
-                        AssetDatabase.LoadAssetAtPath("Assets/VRChat Examples/Prefabs/VRCChair/VRCChair3.prefab",
-                            typeof(object));
-                    if (chairPrefab != null)
-                    {
-                        PrefabUtility.InstantiatePrefab(chairPrefab as GameObject);
-                        return;
-                    }
-                    Debug.Log("the prefab is missing!! SOMEHOW!!");
-                }
-            }
+            
+            if(GUILayout.Button(USKLogo,GUIStyle.none))Application.OpenURL("https://github.com/akalink/Udon-Starter-Kit");
             
             userPrefab = EditorGUILayout.ObjectField("Any Prefab", userPrefab, typeof(object), false) as GameObject;
             if (GUILayout.Button("Generates Above Prefab"))
