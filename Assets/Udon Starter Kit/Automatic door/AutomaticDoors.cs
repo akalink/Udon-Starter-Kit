@@ -8,12 +8,13 @@ using VRC.Udon.Common.Interfaces;
 
 namespace StarterKit
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class AutomaticDoors : UdonSharpBehaviour
     {
-        [Header("A door that will automatically Open when you walk towards it. Can be networked or not.")]
-        public bool networked = false;
-        public DoorLock lockable;
-        public TextMeshProUGUI logger;
+        [Header("A door that will automatically Open when you walk towards it.\nCan be networked or not.")]
+        [SerializeField] private bool networked = false;
+        [SerializeField] private DoorLock lockable;
+        [SerializeField] private TextMeshProUGUI logger;
         private Animator doorAnim;
         private string doorAnimName = "Open";
         private int storePlayersInCollider = 0;
@@ -34,20 +35,21 @@ namespace StarterKit
         public override void OnPlayerTriggerEnter(VRCPlayerApi player)
         {
             LoggerPrint(player.displayName + " had entered the trigger collider");
-            if (player.isLocal)
+
+            if (!networked)
             {
-                if (!networked)
+                if (player.isLocal)
                 {
                     doorAnim.SetBool(doorAnimName, true);
                 }
-                else
-                {
-                    SendCustomNetworkEvent(NetworkEventTarget.All,nameof(EnterTriggerZone));
-                }
+            }
+            else
+            {
+                EnterTriggerZone();
             }
         }
 
-        public void EnterTriggerZone()
+        private void EnterTriggerZone()
         {
             if (lockable != null)
             {
@@ -64,21 +66,21 @@ namespace StarterKit
         public override void OnPlayerTriggerExit(VRCPlayerApi player)
         {
             LoggerPrint(player.displayName + " had left the trigger collider");
-            if (player.isLocal)
+
+            if (!networked)
             {
-                if (!networked)
+                if (player.isLocal)
                 {
-                
                     doorAnim.SetBool(doorAnimName ,false);
                 }
-                else
-                {
-                    SendCustomNetworkEvent(NetworkEventTarget.All, nameof(ExitTriggerZone));
-                }
+            }
+            else
+            {
+                ExitTriggerZone();
             }
             
         }
-        public void ExitTriggerZone()
+        private void ExitTriggerZone()
         {
             
             storePlayersInCollider--;

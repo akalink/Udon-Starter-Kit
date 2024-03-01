@@ -10,7 +10,7 @@ namespace StarterKit
 {
     public class UIPedestel : UdonSharpBehaviour
     {
-        private VRC_AvatarPedestal pedestal;
+        public VRC_AvatarPedestal pedestal;
 
         public TextMeshProUGUI logger;
         private void LoggerPrint(string text)
@@ -19,16 +19,21 @@ namespace StarterKit
             {
                 logger.text += "-" + this.name + "-" + text + "\n";
             }
+            else
+            {
+                Debug.Log( "-" + this.name + "-" + text);
+            }
         }
         private void Start()
         {
-            pedestal = (VRC_AvatarPedestal)GetComponent(typeof(VRC_AvatarPedestal));
-            LoggerPrint("The pedestal has been found and assigned");
+            pedestal = GetComponent<VRC_AvatarPedestal>();
+            LoggerPrint("The pedestal has been found and assigned " + (pedestal != null));
+            
         }
 
         public void _SetPlayerAsAvatar()
         {
-            LoggerPrint(Networking.LocalPlayer.displayName + "has clicked the pedestal");
+            LoggerPrint(Networking.LocalPlayer.displayName + " has clicked the pedestal");
             if (pedestal != null)
             {
                 pedestal.SetAvatarUse(Networking.LocalPlayer);

@@ -76,7 +76,24 @@ namespace StarterKit
                 
             }
 
+            if (GUILayout.Button("Copy Over Global Position"))
+            {
+                if(Selection.gameObjects.Length < 2) return;
+                
+                Vector3 vector3 = Selection.gameObjects[0].transform.position;
+                int l = Selection.gameObjects.Length;
+                for (int i = 1 - 1; i < l; i++)
+                {
+                    Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {vector3}");
+                    Selection.gameObjects[i].transform.position = vector3;
+                    
+                }
+            }
+
             GUILayout.Label("Additional tools are to be added with time.");
         }
+        
     }
+    
+
 }

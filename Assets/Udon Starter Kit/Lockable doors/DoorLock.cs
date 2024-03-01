@@ -8,14 +8,14 @@ using VRC.Udon;
 
 namespace StarterKit
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class DoorLock : UdonSharpBehaviour
     {
         [Header("Assign to the teleport or automatic doors to add a locking mechanism to them.")]
-        public bool allowVrHandCollision = true;
-        public TextMeshProUGUI logger;
-        public string visualMaterialPropertyName = "_EmissionColor";
-        [UdonSynced()] private int iDplayer = -1;
-        private bool isLocked = false;
+        [SerializeField] private bool allowVrHandCollision = true;
+        [SerializeField] private TextMeshProUGUI logger;
+        [SerializeField] private string visualMaterialPropertyName = "_EmissionColor";
+        [UdonSynced()] private bool isLocked = false;
         private Renderer renderer;
         private string handTrackerName = "trackhand12345";
 
@@ -59,10 +59,7 @@ namespace StarterKit
             LoggerPrint(Networking.LocalPlayer + " is now the owner");
             if (isLocked)
             {
-                if (iDplayer != -1)
-                {
-                    DoorIsUnlocked();
-                }
+                DoorIsUnlocked();
             }
             else
             {
@@ -92,7 +89,7 @@ namespace StarterKit
         #region Playing Hooky Checks
         public override void OnPlayerRespawn(VRCPlayerApi player)
         {
-            if (player.playerId == iDplayer)
+            if (player.IsOwner(gameObject))
             {
                 LoggerPrint(player.displayName + " who had locked the door has respawned");
                 DoorIsUnlocked();
@@ -100,7 +97,7 @@ namespace StarterKit
         }
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
-            if (player.playerId == iDplayer)
+            if (player.IsOwner(gameObject))
             {
                 LoggerPrint(player.displayName + " who had locked the door has left");
                 DoorIsUnlocked();
@@ -113,7 +110,6 @@ namespace StarterKit
         {
             LoggerPrint("The door is Locked");
             isLocked = true;
-            iDplayer = Networking.LocalPlayer.playerId;
             RequestSerialization();
             UpdateStatus();
         }
@@ -121,7 +117,7 @@ namespace StarterKit
         private void DoorIsUnlocked()
         {
             LoggerPrint("The door is Unlocked");
-            iDplayer = -1;
+            isLocked = false;
             RequestSerialization();
             UpdateStatus();
         }
@@ -129,7 +125,7 @@ namespace StarterKit
 
         public bool _LockCheck()
         {
-            if (iDplayer != -1)
+            if (isLocked)
             {
                 LoggerPrint("A person tried to teleport but can't");
                 return false;
@@ -146,16 +142,7 @@ namespace StarterKit
 
         public void UpdateStatus()
         {
-            if (iDplayer == -1)
-            {
-                LoggerPrint("-Synced-The door is Unlocked");
-                isLocked = false;
-            }
-            else
-            {
-                LoggerPrint("-Synced-The door is Locked");
-                isLocked = true;
-            }
+            LoggerPrint($"-Synced-The door is {(isLocked ? "Locked" : "Unlocked")}");
             MaterialState();
         }
         #endregion

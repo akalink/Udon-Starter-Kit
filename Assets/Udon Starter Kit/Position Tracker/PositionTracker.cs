@@ -11,10 +11,10 @@ namespace StarterKit
     public class PositionTracker : UdonSharpBehaviour
     {
         [Header("A system that will follow the players position and optionally their head and hands allow them to press buttons with their hands while in vr")]
-        public bool allowVRHandCollision = true;
-        public bool allowHeadTracking = true;
+        [SerializeField] private bool allowVRHandCollision = true;
+        [SerializeField] private bool allowHeadTracking = true;
         private bool fingerCollision = false;
-        public TextMeshProUGUI logger;
+        [SerializeField] private TextMeshProUGUI logger;
         private HumanBodyBones LeftBone;
         private HumanBodyBones RightBone;
 
