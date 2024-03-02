@@ -26,7 +26,7 @@ namespace StarterKit
         }
         private void Start()
         {
-            pedestal = GetComponent<VRC_AvatarPedestal>();
+            //pedestal = GetComponent<VRC_AvatarPedestal>();
             LoggerPrint("The pedestal has been found and assigned " + (pedestal != null));
             
         }

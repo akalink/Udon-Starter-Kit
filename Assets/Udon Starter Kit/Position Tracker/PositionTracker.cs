@@ -48,14 +48,14 @@ namespace StarterKit
             
             CheckVR();
         }
-        public void CheckVR()
+        private void CheckVR()
         {
             if (allowVRHandCollision)
             {
                 allowVRHandCollision = LocalPlayer.IsUserInVR();
                 if (allowVRHandCollision)
                 {
-                    fingerCollision = _Checkbones();
+                    fingerCollision = Checkbones();
                 }
                 LoggerPrint("VR and bone check returned " + allowVRHandCollision);
             }
@@ -69,7 +69,7 @@ namespace StarterKit
         }
         
 
-        public bool _Checkbones()
+        private bool Checkbones()
         {
             bool returnIfAssigned = false;
             if ((LocalPlayer.GetBonePosition(HumanBodyBones.RightIndexDistal) != Vector3.zero) ||

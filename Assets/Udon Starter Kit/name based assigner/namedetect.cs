@@ -1,21 +1,30 @@
 ﻿
 using System;
+using System.Security.Policy;
 using TMPro;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Serialization;
+using VRC.SDK3.StringLoading;
 using VRC.SDKBase;
 using VRC.Udon;
+using VRC.Udon.Common.Interfaces;
 
 namespace StarterKit
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class NameDetect : UdonSharpBehaviour
     {
         [Header("Assigns a object to specified users, requires a head tracker in your scene.")]
         [Header("Highly recommended to read the wiki, setting this up is not drag and drop")]
         [Header("Udon Starter Kit >> Wiki")]
-        public String[] names;
+        [SerializeField]
+        private bool downloadList;
+
+        [SerializeField]
+        private VRCUrl url;
+        [SerializeField] private String[] names;
         [UdonSynced()] private int[] syncedIDs;
         private ParentConstraint[] assignTags;
         private Transform resetPosition;
@@ -34,6 +43,11 @@ namespace StarterKit
         void Start()
         {
             //move line
+            if (downloadList)
+            {
+                VRCStringDownloader.LoadUrl(url,(IUdonEventReceiver)this);
+                //return;
+            }
             if (names.Length == 0)
             {
                 noRange = true;
@@ -54,6 +68,18 @@ namespace StarterKit
             {
                 CheckName(Networking.LocalPlayer);
             }
+        }
+
+        public override void OnStringLoadSuccess(IVRCStringDownload result)
+        {
+            string s = result.Result;
+            names = s.Split('\n');
+            Debug.Log("Success Result " + names[0]);
+        }
+
+        public override void OnStringLoadError(IVRCStringDownload result)
+        {
+            Debug.LogWarning(result.ErrorCode);
         }
 
 
