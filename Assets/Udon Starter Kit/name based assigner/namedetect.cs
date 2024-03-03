@@ -13,7 +13,7 @@ using VRC.Udon.Common.Interfaces;
 
 namespace StarterKit
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class NameDetect : UdonSharpBehaviour
     {
         [Header("Assigns a object to specified users, requires a head tracker in your scene.")]
@@ -24,11 +24,15 @@ namespace StarterKit
 
         [SerializeField]
         private VRCUrl url;
+
+        private bool downloadIsReady;
         [SerializeField] private String[] names;
-        [UdonSynced()] private int[] syncedIDs;
+ 
+        private VRCPlayerApi[] allPlayers = new VRCPlayerApi[82];
         private ParentConstraint[] assignTags;
-        private Transform resetPosition;
-        private bool noRange = false;
+        private VRCPlayerApi[] assignedPlayers;
+        private int indexAssignment = -1;
+        private bool noRange = true;
         private bool assignedObject = false;
         public TextMeshProUGUI logger;
 
@@ -38,43 +42,45 @@ namespace StarterKit
             {
                 logger.text += "-" + this.name + "-" + text + "\n";
             }
+            else
+            {
+                Debug.Log("-" + this.name + "-" + text + "\n");
+            }
         }
 
         void Start()
         {
-            //move line
+            assignTags = GetComponentsInChildren<ParentConstraint>(true);
+            assignedPlayers = new VRCPlayerApi[assignTags.Length];
+            Debug.Log("tag length = " + assignTags.Length);
+
             if (downloadList)
             {
                 VRCStringDownloader.LoadUrl(url,(IUdonEventReceiver)this);
-                //return;
             }
-            if (names.Length == 0)
+            else if(names.Length == 0)
             {
                 noRange = true;
-                return;
             }
-
-            resetPosition = GetComponent<Transform>();
-            assignTags = GetComponentsInChildren<ParentConstraint>(true);
-            Debug.Log("tag length = " + assignTags.Length);
-            syncedIDs = new int[assignTags.Length - 1];
-            for (int i = 0; i < syncedIDs.Length; i++)
+            else
             {
-                syncedIDs[i] = -1;
-            }
-
-            
-            if (Networking.LocalPlayer.IsOwner(gameObject))
-            {
-                CheckName(Networking.LocalPlayer);
+                noRange = false;
+                downloadIsReady = true;
             }
         }
+
+
+        
 
         public override void OnStringLoadSuccess(IVRCStringDownload result)
         {
             string s = result.Result;
             names = s.Split('\n');
+            noRange = false;
+            
             Debug.Log("Success Result " + names[0]);
+            downloadIsReady = true;
+            IterateThroughNames();
         }
 
         public override void OnStringLoadError(IVRCStringDownload result)
@@ -83,108 +89,153 @@ namespace StarterKit
         }
 
 
-        private void CheckName(VRCPlayerApi player)
-        {
-            /*
-                    if (noRange)
-                    {
-                        return;
-                    }
-                    string tempName = player.displayName;
-                    for (int i = 0; i < names.Length; i++)
-                    {
-                        if (names[i] == tempName)
-                        {
-                            for (int k = 0; k < syncedIDs.Length; k++)
-                            {
-                                if (syncedIDs[k] == -1)
-                                {
-                                    syncedIDs[k] = player.playerId;
-                                    Networking.SetOwner(player, assignTags[k].gameObject);
-                                    assignTags[k].enabled = true;
-                                    assignedObject = true;
-                                    RequestSerialization();
-                                    return;
-                                }
-                            }
-                        }
-                    }*/
-        }
 
-        public override void OnPlayerJoined(VRCPlayerApi player)
-        {
-            LoggerPrint("checking if " + player.displayName + " should get a object");
-            if (noRange)
-            {
-                return;
-            }
 
-            if (Networking.LocalPlayer.IsOwner(gameObject))
+        public override void OnPlayerJoined(VRCPlayerApi player) //check if download is ready first, also save local array of player ids in instance
+        {
+            //LoggerPrint("checking if " + player.displayName + " should get a object");
+            
+            for (int i = 0; i < allPlayers.Length; i++)
             {
-                LoggerPrint(Networking.LocalPlayer.displayName + " is owner");
-                string tempName = player.displayName;
-                for (int i = 0; i < names.Length; i++)
+                if (allPlayers[i] == null)
                 {
-                    if (names[i] == tempName)
-                    {
-                        for (int k = 0; k < syncedIDs.Length; k++)
-                        {
-                            if (syncedIDs[k] == -1)
-                            {
-                                LoggerPrint(player.playerId + " is assigned a space on the array");
-                                syncedIDs[k] = player.playerId;
-                                RequestSerialization();
-                                IterateThroughNames();
-                                return;
-                            }
-                        }
-                    }
+                    allPlayers[i] = player;
+                    break;
                 }
             }
+            
+            IterateThroughNames();
+            
+            // // if (noRange)
+            // // {
+            // //     return;
+            // // }
+            //
+            // if (Networking.LocalPlayer.IsOwner(gameObject))
+            // {
+            //     LoggerPrint(Networking.LocalPlayer.displayName + " is owner");
+            //     //string tempName = player.displayName;
+            //     for (int i = 0; i < syncedIDs.Length; i++)
+            //     {
+            //         if (syncedIDs[i] == -1)
+            //         {
+            //             syncedIDs[i] = player.playerId;
+            //             LoggerPrint($"Assign {player.displayName} to the int array");
+            //             RequestSerialization();
+            //             IterateThroughNames();
+            //             break;
+            //         }
+            //     }
+            //     // for (int i = 0; i < names.Length; i++)
+            //     // {
+            //     //     if (names[i] == tempName)
+            //     //     {
+            //     //         for (int k = 0; k < syncedIDs.Length; k++)
+            //     //         {
+            //     //             if (syncedIDs[k] == -1)
+            //     //             {
+            //     //                 LoggerPrint(player.playerId + " is assigned a space on the array");
+            //     //                 syncedIDs[k] = player.playerId;
+            //     //                 RequestSerialization();
+            //     //                 IterateThroughNames();
+            //     //                 return;
+            //     //             }
+            //     //         }
+            //     //     }
+            //     // }
+            // }
         }
 
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
-            if (noRange)
+            LoggerPrint($"{player.displayName} has left");
+            for (int i = 0; i < assignTags.Length; i++)
             {
-                return;
-            }
-
-            int tempID = player.playerId;
-            for (int i = 0; i < syncedIDs.Length; i++)
-            {
-                if (syncedIDs[i] == tempID)
+                LoggerPrint($"{assignTags[i].gameObject.name} is owned by {Networking.GetOwner(assignTags[i].gameObject).displayName}");
+                if (assignedPlayers[i] != null && assignedPlayers[i] == player)
                 {
-                    syncedIDs[i] = -1;
-                    assignTags[i+1].enabled = false;
-                    assignTags[i+1].gameObject.transform.position = resetPosition.position;
-                    RequestSerialization();
-                    return;
+                    LoggerPrint(player + "'s object is being removed");
+                    assignTags[i].enabled = false;
+                    assignTags[i].gameObject.SetActive(false);
+                    
                 }
             }
+            for (int i = 0; i < allPlayers.Length; i++)
+            {
+                if (allPlayers[i] == player)
+                {
+                    allPlayers[i] = null;
+                    break;
+                }
+            }
+
+
+            IterateThroughNames();
+            
+            //RequestSerialization();
+            
+            // int tempID = player.playerId;
+            // for (int i = 0; i < assignTags.Length; i++)
+            // {
+            //     VRCPlayerApi to = Networking.GetOwner(assignTags[i].gameObject);
+            //     if (to.Equals(player))
+            //     {
+            //         assignTags[i].enabled = false;
+            //         assignTags[i].gameObject.transform.position = resetPosition;
+            //         break;
+            //     }
+            // }
+            //
+            // if (Networking.LocalPlayer.IsOwner(gameObject))
+            // {
+            //     for (int i = 0; i < syncedIDs.Length; i++)
+            //     {
+            //         if (syncedIDs[i] == tempID)
+            //         {
+            //             syncedIDs[i] = -1;
+            //             RequestSerialization();
+            //             IterateThroughNames();
+            //             return;
+            //         }
+            //     }
+            // }
         }
 
         public void IterateThroughNames()
         {
-            if (assignedObject)
+            if (noRange || !downloadIsReady)
             {
                 return;
             }
 
-            if (noRange)
+            string tempName;// = Networking.LocalPlayer.displayName;
+            
+            int indexOfTags = 1;
+            for (int j = 0; j < allPlayers.Length; j++)
             {
-                return;
-            }
-
-            int tempID = Networking.LocalPlayer.playerId;
-            for (int i = 0; i < syncedIDs.Length; i++)
-            {
-                if (syncedIDs[i] == tempID)
+                //LoggerPrint("Iteration #" + (j+1));
+                if (allPlayers[j] == null)
                 {
-                    LoggerPrint(Networking.LocalPlayer.displayName + " their ID matched and are assigned a object");
-                    Networking.SetOwner(Networking.LocalPlayer, assignTags[i+1].gameObject);
-                    assignTags[i+1].enabled = true;
-                    assignedObject = true;
+                    continue;
+                }
+                for (int i = 0; i < names.Length; i++)
+                {
+                    //LoggerPrint($"i index {i}");
+                    tempName = allPlayers[j].displayName;
+                    
+                    if (names[i] == tempName) 
+                    { 
+                        LoggerPrint(tempName + " is getting an object"); 
+                        assignTags[indexOfTags].enabled = true; 
+                        GameObject obj = assignTags[indexOfTags].gameObject; 
+                        obj.SetActive(true);
+                        
+                        Networking.SetOwner(allPlayers[j],obj); 
+                        assignedPlayers[indexOfTags] = allPlayers[j]; 
+                        LoggerPrint($"{obj.name} at index {indexOfTags} is assigned to player {Networking.GetOwner(obj).displayName}"); 
+                        indexOfTags++; 
+                        break;
+                    }
                 }
             }
         }
