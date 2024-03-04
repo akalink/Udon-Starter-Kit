@@ -27,11 +27,10 @@ namespace StarterKit
 
         private bool downloadIsReady;
         [SerializeField] private String[] names;
-
-        [SerializeField] private GameObject prefab;
-        //private VRCPlayerApi[] allPlayers = new VRCPlayerApi[82];
+        
         private DataDictionary allPlayerDD;
-        private ParentConstraint[] assignTags;
+        
+        private ParentConstraint[] assignedTags;
         private VRCPlayerApi[] assignedPlayers;
         private bool noRange = true;
         public TextMeshProUGUI logger;
@@ -50,12 +49,14 @@ namespace StarterKit
 
         void Start()
         {
+            
             allPlayerDD = new DataDictionary();
-            assignTags = GetComponentsInChildren<ParentConstraint>(true);
-            assignedPlayers = new VRCPlayerApi[assignTags.Length];
+            assignedTags = GetComponentsInChildren<ParentConstraint>(true);
+            assignedPlayers = new VRCPlayerApi[assignedTags.Length];
 
             if (downloadList)
             {
+                LoggerPrint("Using string download");
                 VRCStringDownloader.LoadUrl(url,(IUdonEventReceiver)this);
             }
             else if(names.Length == 0)
@@ -64,6 +65,7 @@ namespace StarterKit
             }
             else
             {
+                LoggerPrint("Using name array");
                 noRange = false;
                 downloadIsReady = true;
             }
@@ -93,18 +95,9 @@ namespace StarterKit
 
         public override void OnPlayerJoined(VRCPlayerApi player) //check if download is ready first, also save local array of player ids in instance
         {
-            //LoggerPrint("checking if " + player.displayName + " should get a object");
-            
-            // for (int i = 0; i < allPlayers.Length; i++)
-            // {
-            //     if (allPlayers[i] == null)
-            //     {
-            //         allPlayers[i] = player;
-            //         break;
-            //     }
-            // }
+
             allPlayerDD.Add(player.displayName,player.playerId);
-            
+            LoggerPrint($"Number of players in dd is {allPlayerDD.Count}");
             
             IterateThroughNames();
             
@@ -113,30 +106,20 @@ namespace StarterKit
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
             LoggerPrint($"{player.displayName} has left");
-            for (int i = 0; i < assignTags.Length; i++)
+            for (int i = 0; i < assignedTags.Length; i++)
             {
-                LoggerPrint($"{assignTags[i].gameObject.name} is owned by {Networking.GetOwner(assignTags[i].gameObject).displayName}");
+                LoggerPrint($"{assignedTags[i].gameObject.name} is owned by {Networking.GetOwner(assignedTags[i].gameObject).displayName}");
                 if (assignedPlayers[i] != null && assignedPlayers[i] == player)
                 {
                     LoggerPrint(player + "'s object is being removed");
-                    assignTags[i].enabled = false;
-                    assignTags[i].gameObject.SetActive(false);
+                    assignedPlayers[i] = null;
+                    assignedTags[i].enabled = false;
+                    assignedTags[i].gameObject.SetActive(false);
                     
                 }
             }
-            // for (int i = 0; i < allPlayers.Length; i++)
-            // {
-            //     if (allPlayers[i] == player)
-            //     {
-            //         allPlayers[i] = null;
-            //         break;
-            //     }
-            // }
             allPlayerDD.Remove(player.displayName);
 
-
-            IterateThroughNames();
-            
         }
 
         public void IterateThroughNames()
@@ -145,50 +128,40 @@ namespace StarterKit
             {
                 return;
             }
-
-            string tempName;
+            LoggerPrint("Going through names");
+            
             
             int indexOfTags = 1;
-            // for (int j = 0; j < allPlayers.Length; j++)
-            // {
-            //     if (allPlayers[j] == null)
-            //     {
-            //         continue;
-            //     }
-            //     for (int i = 0; i < names.Length; i++)
-            //     {
-            //         tempName = allPlayers[j].displayName;
-            //         
-            //         if (names[i] == tempName) 
-            //         { 
-            //             LoggerPrint(tempName + " is getting an object"); 
-            //             assignTags[indexOfTags].enabled = true; 
-            //             GameObject obj = assignTags[indexOfTags].gameObject; 
-            //             obj.SetActive(true);
-            //             
-            //             Networking.SetOwner(allPlayers[j],obj); 
-            //             assignedPlayers[indexOfTags] = allPlayers[j]; 
-            //             LoggerPrint($"{obj.name} at index {indexOfTags} is assigned to player {Networking.GetOwner(obj).displayName}"); 
-            //             indexOfTags++; 
-            //             break;
-            //         }
-            //     }
-            // }
+            
             for (int i = 0; i < names.Length; i++)
             {
-                if(indexOfTags > assignTags.Length-1) return; //number of parent constraints is one more than amount of assignable crowns.
+                LoggerPrint("Entered for loop");
+                if(indexOfTags > assignedTags.Length-1) return; //number of parent constraints is one more than amount of assignable crowns.
                 
                 if(allPlayerDD.TryGetValue(names[i], out DataToken pId))
                 {
-                    VRCPlayerApi playerApi = VRCPlayerApi.GetPlayerById((int) pId);
-                    assignTags[indexOfTags].enabled = true; 
-                    GameObject obj = assignTags[indexOfTags].gameObject; 
-                    obj.SetActive(true);
-                    if(Networking.LocalPlayer == playerApi) Networking.SetOwner(playerApi,obj); 
+                    LoggerPrint($"found {names[i]}");
                     
-                    assignedPlayers[indexOfTags] = playerApi; 
-                    LoggerPrint($"{obj.name} at index {indexOfTags} is assigned to player {Networking.GetOwner(obj).displayName}"); 
-                    indexOfTags++; 
+                    VRCPlayerApi playerApi = VRCPlayerApi.GetPlayerById((int) pId);
+                    if(assignedPlayers[indexOfTags] == null)
+                    {
+                        GameObject obj = assignedTags[indexOfTags].gameObject; 
+                        obj.SetActive(true);
+                        Networking.SetOwner(playerApi,obj);
+                        if (Networking.LocalPlayer == playerApi)
+                        {
+                            assignedTags[indexOfTags].enabled = true; 
+                        } 
+                    
+                        assignedPlayers[indexOfTags] = playerApi;
+                        LoggerPrint($"{obj.name} at index {indexOfTags} is assigned to player {Networking.GetOwner(obj).displayName}"); 
+                        indexOfTags++; 
+                    }
+                    else
+                    {
+                        indexOfTags++;
+                    }
+
                 }
             }
         }
