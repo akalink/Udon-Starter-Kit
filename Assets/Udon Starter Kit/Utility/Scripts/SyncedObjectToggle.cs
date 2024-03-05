@@ -7,6 +7,7 @@ using VRC.Udon.Common.Interfaces;
 
 namespace StarterKit
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class SyncedObjectToggle : UdonSharpBehaviour
     {
         [Header("Takes a input of Game Objects and toggles them on or off based on their original state")]
@@ -36,23 +37,6 @@ namespace StarterKit
                 objectsBoolLocal[i] = objects[i].activeSelf;
             }
         }
-
-        /*public override void Interact()
-        {
-            if (!noRange)
-            {
-                if (Synced)
-                {
-                    SendCustomNetworkEvent(NetworkEventTarget.All,nameof(ToggleObjects));
-                }
-                else
-                {
-                    ToggleObjects();
-                }
-                
-            }
-            
-        }*/
 
         public void ToggleObjects()
         {

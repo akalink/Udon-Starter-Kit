@@ -7,6 +7,7 @@ using VRC.Udon;
 
 namespace StarterKit
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class MirrorWithToggle : UdonSharpBehaviour
     {
         [Header("A set of mirrors that can be toggled on and off.")]

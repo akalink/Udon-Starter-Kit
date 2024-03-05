@@ -165,10 +165,5 @@ namespace StarterKit
                 }
             }
         }
-
-        public override void OnDeserialization()
-        {
-            IterateThroughNames();
-        }
     }
 }

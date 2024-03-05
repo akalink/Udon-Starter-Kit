@@ -10,6 +10,7 @@ using VRC.Udon.Common.Interfaces;
 
 namespace StarterKit
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class GeneralTrigger : UdonSharpBehaviour
     {
         

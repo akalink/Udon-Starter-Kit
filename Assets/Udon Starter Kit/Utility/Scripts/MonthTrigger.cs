@@ -7,6 +7,7 @@ using VRC.Udon;
 
 namespace StarterKit
 {
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class MonthTrigger : UdonSharpBehaviour
     {
         

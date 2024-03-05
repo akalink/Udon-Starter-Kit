@@ -59,13 +59,13 @@ namespace StarterKit
         private void OnGUI()
         {
             if(GUILayout.Button(USKLogo,GUIStyle.none))Application.OpenURL("https://github.com/akalink/Udon-Starter-Kit");
-
+            GUILayout.Label("Generate any of listed prefabs from the sdk");   
             for (int i = 0; i < Prefabs.Count; i++)
             {
                 
                 string[] name = Prefabs[i].Split("/");
                 name = name[name.Length - 1].Split(".");
-                if (GUILayout.Button("Generate " + name[0]))
+                if (GUILayout.Button(name[0]))
                 {
                     
                     if(name[0] == "VRCWorld" && GameObject.Find("VRCWorld")){return;}

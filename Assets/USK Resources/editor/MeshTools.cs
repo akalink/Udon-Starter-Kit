@@ -11,12 +11,15 @@ namespace StarterKit
     {
         public Transform anchor;
         public Mesh MeshWithVertexColors;
+        public Mesh MeshObject;
         private static Texture USKLogo;
 
         [MenuItem("Window/Udon Starter Kit/Mesh Tools", false, 39)]
         public static void ShowWindow()
         {
             MeshTools window = (MeshTools) GetWindow(typeof(MeshTools));
+            window.minSize = new Vector2(300,300);
+            window.maxSize = new Vector2(300,1080);
             window.Show();
             USKLogo = Resources.Load("usk-logo-thumbnail") as Texture2D;
         }
@@ -110,9 +113,23 @@ namespace StarterKit
                 Debug.Log(MeshWithVertexColors.colors32.Length );
                 
             }
+            MeshObject = EditorGUILayout.ObjectField("Mesh Object", MeshObject, typeof(Mesh), true) as Mesh;
+            
+            if (GUILayout.Button("Override Mesh Filter"))
+            {
+                foreach (var obj in Selection.gameObjects)
+                {
+                    if (obj.GetComponent<MeshFilter>() != null)
+                    {
+                        MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
+                        meshFilter.mesh = MeshObject;
+                    }
+                }
+                
+            }
             
             GUILayout.Label("\n(Re)Generates UV2 on the selected meshes");
-            GUILayout.Label("Do no use if you have custom UV2s on these meshes!", EditorStyles.boldLabel);
+            GUILayout.Label("Do not use if you have custom UV2s on these meshes!", EditorStyles.boldLabel);
             if(GUILayout.Button("Generate UV2"))
             {
                 foreach(GameObject obj in Selection.gameObjects)

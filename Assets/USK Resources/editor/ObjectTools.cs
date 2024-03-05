@@ -11,7 +11,7 @@ namespace StarterKit
     {
         private int folderIndex = 0;
         public GameObject userPrefab;
-        public Mesh MeshObject;
+        // public Mesh MeshObject;
         private static Texture USKLogo;
 
         [MenuItem("Window/Udon Starter Kit/Object Tools", false, 38)]
@@ -20,6 +20,8 @@ namespace StarterKit
         {
             ObjectTools window = (ObjectTools) GetWindow(typeof(ObjectTools));
             window.Show();
+            window.minSize = new Vector2(300,300);
+            window.maxSize = new Vector2(300,1080);
             USKLogo = Resources.Load("usk-logo-thumbnail") as Texture2D;
         }
         
@@ -61,20 +63,20 @@ namespace StarterKit
                 }
             }
             
-            MeshObject = EditorGUILayout.ObjectField("Mesh Object", MeshObject, typeof(Mesh), true) as Mesh;
-            
-            if (GUILayout.Button("Override Mesh Filter"))
-            {
-                foreach (var obj in Selection.gameObjects)
-                {
-                    if (obj.GetComponent<MeshFilter>() != null)
-                    {
-                        MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
-                        meshFilter.mesh = MeshObject;
-                    }
-                }
-                
-            }
+            // MeshObject = EditorGUILayout.ObjectField("Mesh Object", MeshObject, typeof(Mesh), true) as Mesh;
+            //
+            // if (GUILayout.Button("Override Mesh Filter"))
+            // {
+            //     foreach (var obj in Selection.gameObjects)
+            //     {
+            //         if (obj.GetComponent<MeshFilter>() != null)
+            //         {
+            //             MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
+            //             meshFilter.mesh = MeshObject;
+            //         }
+            //     }
+            //     
+            // }
 
             if (GUILayout.Button("Copy Over Global Position"))
             {
@@ -86,6 +88,20 @@ namespace StarterKit
                 {
                     Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {vector3}");
                     Selection.gameObjects[i].transform.position = vector3;
+                    
+                }
+            }
+            
+            if (GUILayout.Button("Copy Over Local Position"))
+            {
+                if(Selection.gameObjects.Length < 2) return;
+                
+                Vector3 vector3 = Selection.gameObjects[0].transform.localPosition;
+                int l = Selection.gameObjects.Length;
+                for (int i = 1 - 1; i < l; i++)
+                {
+                    Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {vector3}");
+                    Selection.gameObjects[i].transform.localPosition = vector3;
                     
                 }
             }
