@@ -64,7 +64,7 @@ namespace StarterKit
             if(GUILayout.Button(boothIcon,GUIStyle.none))Application.OpenURL("https://mcphersonsound.booth.pm/");
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
-            GUILayout.Label("MIT License\n \nCopyright (c) 2021-2024 Garrett McPherson"); //I really want to include my chosen name, but my deadname is my legal name.
+            GUILayout.Label("MIT License\n \nCopyright (c) 2021-2024 mcphersonsound"); 
             
         }
     }

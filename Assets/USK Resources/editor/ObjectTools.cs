@@ -92,6 +92,20 @@ namespace StarterKit
                 }
             }
             
+            if (GUILayout.Button("Copy Over Global Rotation"))
+            {
+                if(Selection.gameObjects.Length < 2) return;
+                
+                Quaternion rotation = Selection.gameObjects[0].transform.rotation;
+                int l = Selection.gameObjects.Length;
+                for (int i = 1 - 1; i < l; i++)
+                {
+                    Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {rotation}");
+                    Selection.gameObjects[i].transform.rotation = rotation;
+                    
+                }
+            }
+            
             if (GUILayout.Button("Copy Over Local Position"))
             {
                 if(Selection.gameObjects.Length < 2) return;
@@ -102,6 +116,20 @@ namespace StarterKit
                 {
                     Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {vector3}");
                     Selection.gameObjects[i].transform.localPosition = vector3;
+                    
+                }
+            }
+            
+            if (GUILayout.Button("Copy Over Local Rotation"))
+            {
+                if(Selection.gameObjects.Length < 2) return;
+                
+                Quaternion rotation = Selection.gameObjects[0].transform.localRotation;
+                int l = Selection.gameObjects.Length;
+                for (int i = 1 - 1; i < l; i++)
+                {
+                    Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {rotation}");
+                    Selection.gameObjects[i].transform.localRotation = rotation;
                     
                 }
             }
