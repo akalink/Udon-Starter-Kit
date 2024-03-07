@@ -2,6 +2,9 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
+.idea
+.vscode
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -80,6 +83,8 @@ Assets/*
 ProjectVersion.txt
 *.meta
 *.asmdef
+
+!source.json
 
 !raw files
 !Assets/Udon Starter Kit
