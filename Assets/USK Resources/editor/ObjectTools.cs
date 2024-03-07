@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarterKit
 {
@@ -36,19 +37,26 @@ namespace StarterKit
             {
                 if (userPrefab != null)
                 {
-                    PrefabUtility.InstantiatePrefab((userPrefab as GameObject));
+                    Object obj = PrefabUtility.InstantiatePrefab(userPrefab);
+                    Undo.RegisterCreatedObjectUndo(obj, $"Undo create {obj.name}");
                 }
             }
 
-            if (GUILayout.Button("Spawn GameObject Folder and Re-parent"))
+            if (GUILayout.Button("Spawn Folder and Re-parent"))
             {
                 GameObject folderParent = new GameObject("Folder Object " + folderIndex);
                 folderIndex++;
                 folderParent.isStatic = true;
+                Undo.RegisterCreatedObjectUndo(folderParent, "Undo add folder parent");
+                
                 foreach (GameObject obj in Selection.gameObjects)
                 {
+                    Undo.SetTransformParent(obj.transform, folderParent.transform, "Undo re-parent");
                     obj.transform.parent = folderParent.transform;
+                    
                 }
+                
+                
             }
 
             if (GUILayout.Button("Set Selected Lights to Baked"))
@@ -58,25 +66,13 @@ namespace StarterKit
                     foreach (var obj in Selection.gameObjects)
                     {
                         Light light = obj.GetComponent<Light>();
+                        if(light == null) continue;
+                        Undo.RecordObject(light, $"Undo set {obj.name} to Baked");
                         light.lightmapBakeType = LightmapBakeType.Baked;
+                        
                     }
                 }
             }
-            
-            // MeshObject = EditorGUILayout.ObjectField("Mesh Object", MeshObject, typeof(Mesh), true) as Mesh;
-            //
-            // if (GUILayout.Button("Override Mesh Filter"))
-            // {
-            //     foreach (var obj in Selection.gameObjects)
-            //     {
-            //         if (obj.GetComponent<MeshFilter>() != null)
-            //         {
-            //             MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
-            //             meshFilter.mesh = MeshObject;
-            //         }
-            //     }
-            //     
-            // }
 
             if (GUILayout.Button("Copy Over Global Position"))
             {
@@ -86,7 +82,7 @@ namespace StarterKit
                 int l = Selection.gameObjects.Length;
                 for (int i = 1 - 1; i < l; i++)
                 {
-                    Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {vector3}");
+                    Undo.RecordObject(Selection.gameObjects[i].transform, $"Changed position of {Selection.gameObjects[i].name} to {vector3}");
                     Selection.gameObjects[i].transform.position = vector3;
                     
                 }
@@ -128,7 +124,7 @@ namespace StarterKit
                 int l = Selection.gameObjects.Length;
                 for (int i = 1 - 1; i < l; i++)
                 {
-                    Undo.RecordObject(Selection.gameObjects[i], $"Changed position of {Selection.gameObjects[i].name} to {rotation}");
+                    Undo.RecordObject(Selection.gameObjects[i].transform, $"Changed position of {Selection.gameObjects[i].name} to {rotation}");
                     Selection.gameObjects[i].transform.localRotation = rotation;
                     
                 }

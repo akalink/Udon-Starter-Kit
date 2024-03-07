@@ -53,25 +53,33 @@ namespace StarterKit
             {
                 foreach (GameObject obj in Selection.gameObjects)
                 {
-                    if (obj.GetComponent<MeshFilter>() != null)
+                    Mesh mesh;
+                    try
                     {
-                        Mesh mesh = obj.GetComponent<MeshFilter>().sharedMesh;
-                        if (mesh != null)
+                        mesh = obj.GetComponent<MeshFilter>().sharedMesh;
+                    }
+                    catch
+                    {
+                        mesh = obj.GetComponent<SkinnedMeshRenderer>().sharedMesh;
+                    }
+
+
+                    if (mesh != null)
+                    {
+                        string temp = obj.name + ": ";
+                        Color32[] vertexColors32 = mesh.colors32;
+                        temp += vertexColors32.Length == 0 ? "Does not have " : "Has ";
+                        temp += "vertex Colors. ";
+                        temp += "A UV2 ";
+                        temp += mesh.uv2.Length == 0 ? "does not exist. " : "exists on this mesh. ";
+                        int triangles = 0;
+                        for (int i = 0; i < mesh.subMeshCount; i++)
                         {
-                            string temp = obj.name + ": ";
-                            Color32[] vertexColors32 = mesh.colors32;
-                            temp += vertexColors32.Length == 0 ? "Does not have " : "Has ";
-                            temp += "vertex Colors. ";
-                            temp += "A UV2 ";
-                            temp += mesh.uv2.Length == 0 ? "does not exist. " : "exists on this mesh. ";
-                            int triangles = 0;
-                            for (int i = 0; i < mesh.subMeshCount; i++)
-                            {
-                                triangles += mesh.GetTriangles(i).Length;
-                            }
-                            temp += "It has " + triangles + " triangles and "+ mesh.subMeshCount + " submeshes";
-                            Debug.Log(temp); 
+                            triangles += mesh.GetTriangles(i).Length;
                         }
+
+                        temp += "It has " + triangles + " triangles and " + mesh.subMeshCount + " submeshes";
+                        Debug.Log(temp);
                     }
                     else 
                     {
@@ -88,6 +96,7 @@ namespace StarterKit
                     Renderer renderer = obj.GetComponent<Renderer>();
                     if (renderer != null)
                     {
+                        Undo.RecordObject(renderer, "Undo set Anchor Override");
                         renderer.probeAnchor = anchor;
                     }
                 }
@@ -100,21 +109,22 @@ namespace StarterKit
                     Renderer renderer = obj.GetComponent<Renderer>();
                     if (renderer != null)
                     {
+                        Undo.RecordObject(renderer, "Undo clear Anchor Override");
                         renderer.probeAnchor = null;
                     }
                 }
             }
             
             MeshWithVertexColors = EditorGUILayout.ObjectField("Mesh Object", MeshWithVertexColors, typeof(Mesh), true) as Mesh;
-            if (GUILayout.Button("Remove Vertex Colors"))
+            if (GUILayout.Button("Remove Vertex Colors (Cannot Undo"))
             {
                 Color32[] vertexColors32 = null;
                 MeshWithVertexColors.colors32 = vertexColors32;
                 Debug.Log(MeshWithVertexColors.colors32.Length );
                 
             }
-            MeshObject = EditorGUILayout.ObjectField("Mesh Object", MeshObject, typeof(Mesh), true) as Mesh;
             
+            MeshObject = EditorGUILayout.ObjectField("Mesh Object", MeshObject, typeof(Mesh), true) as Mesh;
             if (GUILayout.Button("Override Mesh Filter"))
             {
                 foreach (var obj in Selection.gameObjects)
@@ -122,6 +132,7 @@ namespace StarterKit
                     if (obj.GetComponent<MeshFilter>() != null)
                     {
                         MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
+                        Undo.RecordObject(meshFilter, $"Replaced the Mesh Filter on {obj.name}");
                         meshFilter.mesh = MeshObject;
                     }
                 }
@@ -136,6 +147,7 @@ namespace StarterKit
                 {
                     MeshFilter filter = obj.GetComponent<MeshFilter>();
                     if (filter == null || filter.sharedMesh == null) continue;
+                    Undo.RecordObject(filter.sharedMesh, $"Add/Replace UV2 of {obj.name}");
                     Unwrapping.GenerateSecondaryUVSet(filter.sharedMesh);
                 }
             }

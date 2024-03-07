@@ -13,9 +13,8 @@ namespace StarterKit
     public class PrefabSpawner : EditorWindow
     {
         private static Object WorldPrefab;
-        //private static Texture2D worldPrefabPreview;
-        private static readonly string FolderPath = "Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/";//Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs
-        private static List<string> Prefabs = new List<string>();// new[] {"VideoPlayers/UdonSyncPlayer (Unity)","VideoPlayers/UdonSyncPlayer (AVPro)","VRCChair/VRCChair3","AvatarPedestal", "ImageDownload","SimplePenSystem","StringDownloader", "Udon Variable Sync", "VRCMirror", "VRCPlayerVisualDamage", "VRCPortalMarker","VRCWorld"};
+        private static readonly string FolderPath = "Packages/com.vrchat.worlds/Samples/UdonExampleScene/Prefabs/";
+        private static List<string> Prefabs = new List<string>();
         private static Texture USKLogo;
         
         [MenuItem("Window/Udon Starter Kit/Prefab Spawner", false, 36)]
@@ -51,11 +50,7 @@ namespace StarterKit
                 }
             }
         }
-
-        // public static void SetWindow()
-        // {
-        //
-        // }
+        
         private void OnGUI()
         {
             if(GUILayout.Button(USKLogo,GUIStyle.none))Application.OpenURL("https://github.com/akalink/Udon-Starter-Kit");
@@ -74,7 +69,8 @@ namespace StarterKit
                         AssetDatabase.LoadAssetAtPath( Prefabs[i], typeof(object));
                     if (prefab != null)
                     {
-                        PrefabUtility.InstantiatePrefab(prefab as GameObject);
+                        Object obj = PrefabUtility.InstantiatePrefab(prefab as GameObject);
+                        Undo.RegisterCreatedObjectUndo(obj, $"Undo create {obj.name}");
                     }
                     else
                     {
